@@ -58,7 +58,8 @@
   /* Settings
      ======== */
 
-  var gtcx = {};
+  var gctx = {};
+  var should_connect = false;
 
   var scale_factor = 5,
       note_overlap = 15,
@@ -245,7 +246,26 @@
     */
 
     initMessages(svg);
-    pollMessages();
+
+    const connectToggle = document.querySelector('#connectToMQ');
+    connectToggle.addEventListener('click', () => {
+      handleMQToggle();
+    });
+
+    function handleMQToggle() {
+      isChecked = $('#connectToMQ').prop('checked');
+      console.log(isChecked);
+      if (isChecked == true) {
+        //Should connect to MQ
+        should_connect = true;
+        pollMessages();
+      }
+      else {
+        //Should NOT connect to MQ
+        should_connect = false;
+      }
+    };
+    handleMQToggle();
 
     $('#filter').tagsInput({
       height: '45px',
@@ -276,6 +296,8 @@
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
       <button class="test-button">Test</button>
+      <input type="checkbox" name="connectToMQ" id="connectToMQ">
+      <label for='connectToMQ'>Connect to MQ</label>
     </span>
   </footer>
 </section>

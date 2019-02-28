@@ -45,11 +45,7 @@ function wp_action(data, svg_area, silent) {
     var x = Math.random() * (width - size) + size;
     var y = Math.random() * (height - size) + size;
     if (!silent) {
-        if (csize > 0) {
-            play_sound(size, 'add', 1);
-        } else {
-            play_sound(size, 'sub', 1);
-        }
+        play_sound();
     }
 
     if (silent) {
@@ -185,43 +181,104 @@ pollMessages = function() {
     
     getMessage()
       .then(data => {
-          if (!data) {
-              return;
-          }
-
-          console.log(data);
-
-          data.page_title = 'title + ' + Date.now();
-          data.url = 'dd';
-          data.change_size = 2;
-
-          wp_action(data, svg_area);
+          handle_message(data);
       })
       .then(function() {
           setTimeout(pollMessages, 2000);
       });
 }
 
-function play_sound(size, type, volume) {
-    var max_pitch = 100.0;
-    var log_used = 1.0715307808111486871978099;
-    var pitch = 100 - Math.min(max_pitch, Math.log(size + log_used) / Math.log(log_used));
-    var index = Math.floor(pitch / 100.0 * Object.keys(celesta).length);
-    var fuzz = Math.floor(Math.random() * 4) - 2;
-    index += fuzz;
-    index = Math.min(Object.keys(celesta).length - 1, index);
-    index = Math.max(1, index);
-    if (current_notes < note_overlap) {
-        current_notes++;
-        if (type == 'add') {
-            celesta[index].play();
-        } else {
-            clav[index].play();
-        }
-        setTimeout(function() {
-            current_notes--;
-        }, note_timeout);
+function handle_message(msg) {
+    if (!msg) {
+        return;
     }
+
+    console.log(msg);
+
+    msg.page_title = 'title + ' + Date.now();
+    msg.url = 'dd';
+    msg.change_size = 2;
+
+    wp_action(msg, svg_area);
+}
+
+function Pluck(ctx) {
+    this.sr = ctx.sampleRate;
+    this.pro = ctx.createScriptProcessor( 512, 0, 1 );
+    this.pro.connect( ctx.destination );
+}
+
+Pluck.prototype.play = function( freq ) {
+  var   N = Math.round( this.sr / freq ),
+        impulse = this.sr / 1000,
+        y = new Float32Array( N ),
+        n = 0;
+
+  this.pro.onaudioprocess = function( e ) {
+    var out = e.outputBuffer.getChannelData( 0 ), i = 0, xn;
+    for ( ; i < out.length; ++i ) {
+      xn = ( --impulse >= 0 ) ? Math.random() - 0.5 : 0;
+      out[ i ] = y[ n ] = xn + ( y[ n ] + y[ ( n + 1 ) % N ] ) / 2;
+      if ( ++n >= N || !this.playing ) {
+        n = 0;
+      }
+    }
+  }.bind( this );
+  this.playing = true;
+};
+
+Pluck.prototype.pause = function() {
+  this.playing = false;
+};
+
+
+function calculate_frequency(steps) {
+    var rootNote = 440;
+    var a = Math.pow(2,(1.0/12));
+    var freq = rootNote*(Math.pow(a, steps));
+    console.log(steps);
+    console.log(freq);
+    return freq;
+}
+
+function random_note() {
+    var major_key = [0,2,4,5,7,9,11,12];
+    var minor_key = [0,2,3,5,7,8,10,12];
+    var selected_key = major_key;
+
+    var octave = 3;
+    var octave_offset = 12 * (octave - 4); //because our tuning note A440 is A in the 4th octave
+
+    var index = Math.floor(Math.random() * major_key.length);
+    console.log(index);
+    return calculate_frequency(selected_key[index] + octave_offset);
+}
+
+function play_sound() {
+    pluck = new Pluck( gctx );
+    pluck.play( random_note() );
+    // var max_pitch = 100.0;
+    // var log_used = 1.0715307808111486871978099;
+    // var pitch = 100 - Math.min(max_pitch, Math.log(size + log_used) / Math.log(log_used));
+    // var index = Math.floor(pitch / 100.0 * Object.keys(celesta).length);
+    // var fuzz = Math.floor(Math.random() * 4) - 2;
+    // index += fuzz;
+    // index = Math.min(Object.keys(celesta).length - 1, index);
+    // index = Math.max(1, index);
+    // if (current_notes < note_overlap) {
+    //     current_notes++;
+
+    //     // if (type == 'add') {
+    //     //     celesta[index].play();
+    //     // } else {
+    //     //     clav[index].play();
+    //     // }
+    //     pluck = new Pluck( gctx );
+    //     pluck.play( random_note() );
+    //     setTimeout(function() {
+    //         current_notes--;
+    //     }, note_timeout);
+    // }
 }
 
 function play_random_swell() {

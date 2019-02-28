@@ -122,24 +122,22 @@ function wp_action(data, svg_area, silent) {
     }
 }
 
-authToken = '7cd06690-4ff5-4fa4-a662-f5d069f22fe8';
+authToken = '';
 
 function getAuthToken() {
 
-  return fetch('https://anypoint.mulesoft.com/accounts/oauth2/token', {
+  return fetch('https://mq-us-east-1.anypoint.mulesoft.com/api/v1/authorize', {
     method: 'POST',
     headers: {
-      'Content-type': 'application/json'
+      'Content-type': 'application/x-www-form-urlencoded'
     },
-    body: JSON.stringify({
-      'client_id': '623ee0e97fc34692905ae6c6cf9cb4bf',
-      'client_secret': '99fD138C4c604C11968e7A6037C1d110',
-      'grant_type': 'client_credentials'
-    }),
+    body: 'client_id=623ee0e97fc34692905ae6c6cf9cb4bf&client_secret=99fD138C4c604C11968e7A6037C1d110&grant_type=client_credentials'
   })
   .then(function (res) {
-    console.error('Got new access token:', res.access_token)
-    authToken = res.json().access_token
+    return res.json()
+  })
+  .then(body => {
+    authToken = body.access_token
   })
   .catch(function (err) {
     console.error('Problem getting auth token', err)
@@ -159,7 +157,10 @@ function getMessage() {
     if (res.status == 204) {
         return [];
     }
-    if (!res.ok) {
+    else if (res.status == 401) {
+      getAuthToken();
+    }
+    else if (!res.ok) {
         throw new Error('Network response was not ok.');
     }
     return res.json();

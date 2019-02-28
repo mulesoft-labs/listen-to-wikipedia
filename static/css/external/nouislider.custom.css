@@ -54,11 +54,6 @@
 }
 	.noUiSlider {
 		border-radius: 7px;
-		opacity: 0.5;
-	}
-
-	.noUiSlider:hover {
-		opacity: 1;
 	}
 
 	.noUiSlider.connect a,

@@ -58,6 +58,8 @@
   /* Settings
      ======== */
 
+  var gtcx = {};
+
   var scale_factor = 5,
       note_overlap = 15,
       note_timeout = 300,
@@ -160,6 +162,7 @@
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut(150));
+        gctx = Howler.ctx;
       });
     }
 
@@ -182,6 +185,11 @@
     $('#hide_rc_box').click(
       function() {$('#rc-log').toggle();}
     );
+
+    const testButton = document.querySelector('.test-button');
+    testButton.addEventListener('click', () => {
+      play_sound();
+    });
 
     // TODO: Volume slider?
     var loaded_sounds = 0
@@ -267,6 +275,7 @@
       <span id="volumeWrapper" class="interface">
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
+      <button class="test-button">Test</button>
     </span>
   </footer>
 </section>

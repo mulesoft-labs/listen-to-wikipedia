@@ -201,11 +201,11 @@ function handle_message(msg) {
 
     msg.page_title = 'title + ' + Date.now();
     msg.url = 'dd';
-    msg.change_size = 2;
 
     wp_action(msg, svg_area);
 }
 
+// For request events
 function Pluck(ctx) {
     this.sr = ctx.sampleRate;
     this.pro = ctx.createScriptProcessor( 512, 0, 1 );
@@ -235,6 +235,13 @@ Pluck.prototype.pause = function() {
   this.playing = false;
 };
 
+
+// For continuous background noise
+function Drone(ctx) {
+    this.sr = ctx.sampleRate;
+    // this.pro = ctx.createScriptProcessor( 512, 0, 1 );
+    // this.pro.connect( ctx.destination );
+}
 
 function calculate_frequency(steps) {
     var rootNote = 440;

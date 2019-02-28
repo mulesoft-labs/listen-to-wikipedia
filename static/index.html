@@ -189,7 +189,12 @@
 
     const testButton = document.querySelector('.test-button');
     testButton.addEventListener('click', () => {
-      play_sound();
+      fakeMessage = {
+        "page_title": "Test_Title",
+        "url": "http://www.google.com",
+        "change_size": Math.floor(Math.random() * 10)
+      };
+      handle_message(fakeMessage);
     });
 
     // TODO: Volume slider?

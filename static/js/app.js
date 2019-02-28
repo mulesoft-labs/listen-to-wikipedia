@@ -35,13 +35,7 @@ function wp_action(data, svg_area, silent) {
     var csize = size;
     var no_label = false;
     var type;
-    if (data.is_anon) {
-        type = 'anon';
-    } else if (data.is_bot) {
-        type = 'bot';
-    } else {
-        type = 'user';
-    }
+    type = 'user';
 
     var circle_id = 'd' + ((Math.random() * 100000) | 0);
     var abs_size = Math.abs(size);
@@ -128,135 +122,86 @@ function wp_action(data, svg_area, silent) {
     }
 }
 
+authToken = '7cd06690-4ff5-4fa4-a662-f5d069f22fe8';
 
-function wikipediaSocket() {
+function getAuthToken() {
 
+  return fetch('https://anypoint.mulesoft.com/accounts/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      'client_id': '623ee0e97fc34692905ae6c6cf9cb4bf',
+      'client_secret': '99fD138C4c604C11968e7A6037C1d110',
+      'grant_type': 'client_credentials'
+    }),
+  })
+  .then(function (res) {
+    console.error('Got new access token:', res.access_token)
+    authToken = res.json().access_token
+  })
+  .catch(function (err) {
+    console.error('Problem getting auth token', err)
+  });
 }
 
-wikipediaSocket.init = function(ws_url, lid, svg_area) {
-    this.connect = function() {
-        $('#' + lid + '-status').html('(connecting...)');
-        var loading = true;
-        // Terminate previous connection, if any
-        if (this.connection)
-          this.connection.close();
-
-        if ('WebSocket' in window) {
-            var connection = new ReconnectingWebSocket(ws_url);
-            this.connection = connection;
-
-            connection.onopen = function() {
-                console.log('Connection open to ' + lid);
-                $('#' + lid + '-status').html('(connected)');
-            };
-
-            connection.onclose = function() {
-                console.log('Connection closed to ' + lid);
-                $('#' + lid + '-status').html('(closed)');
-            };
-
-            connection.onerror = function(error) {
-                $('#' + lid + '-status').html('Error');
-                console.log('Connection Error to ' + lid + ': ' + error);
-            };
-
-            connection.onmessage = function(resp) {
-                var data = JSON.parse(resp.data);
-
-                if (!all_loaded) {
-                    return;
-                }
-
-                if (data.ns == 'Main' || DEBUG) {
-                    if (!isNaN(data.change_size) && (TAG_FILTERS.length == 0 || $(TAG_FILTERS).filter($.map(data.hashtags, function(i) {
-                        return i.toLowerCase();
-                    })).length > 0)) {
-                        if (TAG_FILTERS.length > 0) {
-                            console.log('Filtering for: ' + TAG_FILTERS)
-                        }
-                        if (data.summary &&
-                            (data.summary.toLowerCase().indexOf('revert') > -1 ||
-                            data.summary.toLowerCase().indexOf('undo') > -1 ||
-                            data.summary.toLowerCase().indexOf('undid') > -1)) {
-                            data.revert = true;
-                        } else {
-                            data.revert = false;
-                        }
-                        var rc_str = '<a href="http://' + lid + '.wikipedia.org/wiki/User:' + data.user + '" target="_blank">' + data.user + '</a>';
-                        if (data.change_size < 0) {
-                            if (data.change_size == -1) {
-                                rc_str += ' removed ' + Math.abs(data.change_size) + ' byte from';
-                            } else {
-                                rc_str += ' removed ' + Math.abs(data.change_size) + ' bytes from';
-                            }
-                        } else if (data.change_size === 0) {
-                            rc_str += ' edited';
-                        } else {
-                            if (data.change_size == 1) {
-                                rc_str += ' added ' + Math.abs(data.change_size) + ' byte to';
-                            } else {
-                                rc_str += ' added ' + Math.abs(data.change_size) + ' bytes to';
-                            }
-                        }
-
-                        rc_str += ' <a href="' + data.url + '" target="_blank">' + data.page_title + '</a> ';
-                        if (data.is_anon) {
-                            rc_str += ' <span class="log-anon">(unregistered user)</span>';
-                        }
-                        if (data.is_bot) {
-                            rc_str += ' <span class="log-bot">(bot)</span>';
-                        }
-                        if (data.revert) {
-                            rc_str += ' <span class="log-undo">(undo)</span>';
-                        }
-                        rc_str += ' <span class="lang">(' + lid + ')</span>';
-                        log_rc(rc_str, 20);
-
-                        wp_action(data, svg_area);
-                    } else if (!isNaN(data.change_size)) {
-                        wp_action(data, svg_area, true);
-                    }
-                } else if (data.page_title == 'Special:Log/newusers' &&
-                           data.url != 'byemail' &&
-                           s_welcome) {
-                    if (user_announcements) {
-                        newuser_action(data, lid, svg_area);
-                    }
-                    var nu_str = '<a href="http://' + lid + '.wikipedia.org/w/index.php?title=User_talk:' + data.user + '&action=edit&section=new">' + data.user + '</a>';
-                    nu_str += ' joined ' + lid + ' Wikipedia! Welcome!';
-                    log_rc(nu_str, 20);
-                }
-            };
-        }
-    };
-    this.close = function() {
-        if (this.connection) {
-            this.connection.close();
-        }
-    };
-};
-
-wikipediaSocket.close = function() {
-    if (this.connection) {
-        this.connection.close();
+function getMessage() {
+  var uri = 'https://mq-us-east-1.anypoint.mulesoft.com/api/v1/organizations/f425e3c1-4229-4e46-b6fe-495ab4b65de0/environments/16342834-9571-4fc1-9ac9-8a144f432644/destinations/audio-monitoring-queue/messages?batchSize=1&poolingTime=0';  
+  
+  return fetch(uri, {
+    headers: {
+      'Authorization': 'bearer ' + authToken,
+      'Content-type': 'application/json'
     }
-};
-
-var log_rc = function(rc_str, limit) {
-    $('#rc-log').prepend('<li>' + rc_str + '</li>');
-    if (limit) {
-        if ($('#rc-log li').length > limit) {
-            $('#rc-log li').slice(limit, limit + 1).remove();
-        }
+  })
+  .then(function(res) {
+    if (res.status == 204) {
+        return [];
     }
-};
-/*
-var rate_bg = svg.append('rect')
-    .attr('opacity', 0.0)
-    .attr('fill', 'rgb(41, 128, 185)')
-    .attr('width', width)
-    .attr('height', height)
-*/
+    if (!res.ok) {
+        throw new Error('Network response was not ok.');
+    }
+    return res.json();
+  })
+  .then(function (res) {    
+    if (res.length > 0) {
+      return JSON.parse(res[0].body);
+    } else {
+      return null;
+    }
+  })
+  .catch(function (err) {
+    console.error('Problem getting a message:', err.statusCode)
+  });
+}
+
+
+initMessages = function(svg) {
+    svg_area = svg;
+}
+
+pollMessages = function() {
+    
+    getMessage()
+      .then(data => {
+          if (!data) {
+              return;
+          }
+
+          console.log(data);
+
+          data.page_title = 'title + ' + Date.now();
+          data.url = 'dd';
+          data.change_size = 2;
+
+          wp_action(data, svg_area);
+      })
+      .then(function() {
+          setTimeout(pollMessages, 2000);
+      });
+}
+
 function play_sound(size, type, volume) {
     var max_pitch = 100.0;
     var log_used = 1.0715307808111486871978099;
@@ -340,15 +285,7 @@ var return_hash_settings = function() {
 };
 
 var return_lang_settings = function() {
-    var enabled_hash = return_hash_settings();
-    enabled_langs = [];
-    for (var i = 0; i < enabled_hash.length +1; i ++) {
-        var setting = enabled_hash[i];
-        if (langs[setting]) {
-            enabled_langs.push(setting);
-        }
-    }
-    return enabled_langs;
+    return [];
 };
 
 var set_hash_settings = function (langs) {

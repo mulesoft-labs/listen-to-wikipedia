@@ -1,0 +1,5 @@
+/* slider position */
+.noUiSlider.horizontal div {
+  position: relative;
+  top: -3px;
+}

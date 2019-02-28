@@ -26,14 +26,6 @@ a:hover {
 label {
     margin-left: .5em;
 }
-
-#area {
-    overflow: hidden;
-}
-#header {
-    background: #f8f8f8;
-    margin: 0;
-}
 #rc-log-c {
     margin: 0.5em;
     line-height: 1.5em;

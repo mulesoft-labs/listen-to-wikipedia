@@ -1,4 +1,6 @@
+@import 'global/vars.css';
 @import 'global/style.css';
+@import 'global/view.css';
 
 @import 'external/jquery.tagsinput.css';
 @import 'external/nouislider.custom.css';

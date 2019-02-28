@@ -131,9 +131,9 @@
   var w = window,
       d = document,
       e = d.documentElement,
-      g = d.getElementsByTagName('#area svg')[0],
+      g = d.getElementsByTagName('.js-view svg')[0],
       width = w.innerWidth || e.clientWidth || g.clientWidth;
-      height = (w.innerHeight  - $('#header').height())|| (e.clientHeight - $('#header').height()) || (g.clientHeight - $('#header').height());
+      height = (w.innerHeight  - $('js-header').height())|| (e.clientHeight - $('js-header').height()) || (g.clientHeight - $('js-header').height());
 
   var celesta = [],
       clav = [],
@@ -174,13 +174,13 @@
                      ';} .bot </style>');
     $('body').append('<div id="loading"><p>Loading sound files ...</p></div>')
 
-    var svg = d3.select("#area").append("svg")
+    var svg = d3.select(".js-view").append("svg")
         .attr({width: width, height: height})
         .style('background-color', '#1c2733');
 
     var update_window = function() {
       width = w.innerWidth || e.clientWidth || g.clientWidth;
-      height = (w.innerHeight  - $('#header').height())|| (e.clientHeight - $('#header').height()) || (g.clientHeight - $('#header').height());
+      height = (w.innerHeight  - $('js-header').height())|| (e.clientHeight - $('js-header').height()) || (g.clientHeight - $('js-header').height());
 
       svg.attr("width", width).attr("height", height);
       if (epm_text) {
@@ -197,17 +197,11 @@
       make_click_handler($('#titles'), 'notitles')
     );
     $('#background_mode').click(
-      function() {$("#area svg").toggle();}
+      function() {$(".js-view svg").toggle();}
     );
     $('#hide_rc_box').click(
       function() {$("#rc-log").toggle();}
     );
-
-    $('#about-link').click(function(){
-      // because we use window.location to set languages.
-      $('html, body').animate({scrollTop:$(document).height()}, 'slow');
-      return false;
-    });
 
     // TODO: Volume slider?
     var loaded_sounds = 0
@@ -314,14 +308,16 @@
   })
 </script>
 
-<div id='header'>
-  <span class="about-link">
-    <span id="volumeWrapper" class="interface">
-      <span id="volumeSlider" class="noUiSlider"></span>
-    </span><a id="about-link" href="">about</a> &amp; <a href="http://blog.hatnote.com/" target="_blank">blog</a> &amp; <a href="https://twitter.com/hatnotable" target="_blank">twitter</a> &amp; <a href="https://itunes.apple.com/us/app/listen-to-wikipedia/id832934300" target="_blank">app</a></span>
-  <h1>Listen to Wikipedia</h1>
-</div>
-<div id='area'></div>
+<section class='view js-view'>
+  <header class="header js-header">
+    <span class="about-link">
+      <span id="volumeWrapper" class="interface">
+        <span id="volumeSlider" class="noUiSlider"></span>
+      </span>
+    </span>
+  </header>
+</section>
+
 <div id='content'>
     <div class='bg'>
         <div id='rc-log-c'>

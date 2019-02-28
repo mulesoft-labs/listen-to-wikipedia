@@ -26,12 +26,6 @@ p {
     line-height: 1.5em;
     margin-bottom: .5em;
 }
-a {
-    color: #306596;
-}
-a:hover {
-    color: #cc4731;
-}
 label {
     margin-left: .5em;
 }
@@ -143,9 +137,6 @@ label {
     font-size: 4em;
     color: #fff;
     background-color: rgba(189, 195, 199, 0.6);
-}
-.unmute {
-    color: #cc4732;
 }
 
 #loading p, {

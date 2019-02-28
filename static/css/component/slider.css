@@ -6,6 +6,15 @@
   display: inline-block;
 }
 
+/* toggle button */
+.noUiSlider div {
+  transition: box-shadow .15s ease-in-out;
+}
+
+.noUiSlider div.active {
+  box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--orange);
+}
+
 .noUiSlider > a {
   background: rgba(0,0,0,.69);
   border-radius: 10px;

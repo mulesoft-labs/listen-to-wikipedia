@@ -59,7 +59,7 @@
      ======== */
 
   var scale_factor = 5,
-      note_overlap = 15,
+      note_overlap = 30,
       note_timeout = 300,
       current_notes = 0,
       max_life = 60000,
@@ -144,7 +144,8 @@
       all_loaded = false,
       s_titles = true,
       s_welcome = true,
-      s_langs = [];
+      s_langs = [],
+      gctx = {};
 
   var user_announcements = false;
   setTimeout(function() {
@@ -160,6 +161,7 @@
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut());
+        gctx = Howler.ctx;
       });
     }
 

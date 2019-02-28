@@ -3,6 +3,9 @@
 @import 'external/nouislider.custom.css';
 
 @import 'global/vars.css';
+@import 'global/grid.css';
 @import 'global/style.css';
 @import 'global/view.css';
+
+@import 'component/slider.css';
 

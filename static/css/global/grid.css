@@ -1,0 +1,67 @@
+.flex {
+  align-items: stretch;
+  display: flex;
+  flex: 1 1 auto;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+
+.noscroll {
+  overflow: visible;
+}
+
+// switch orientation to vertical (defaults to horizontal)
+.col {
+  flex-flow: column nowrap;
+}
+
+// shrink to only fill space of content (defaults to fill available space)
+.shrink {
+  flex: 0 0 auto;
+}
+
+.grow {
+  flex: 1 1 100%;
+}
+
+// alignment of content (defaults to left)
+.justify-center {
+  justify-content: center;
+}
+
+.justify-right {
+  justify-content: flex-end;
+}
+
+.justify-justified {
+  justify-content: space-between; // space between blocks is even
+}
+
+.justify-spaced {
+  justify-content: space-around; // space around blocks is even
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.container {
+  max-width: 960px;
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}

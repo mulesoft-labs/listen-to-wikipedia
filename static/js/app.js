@@ -421,13 +421,7 @@ var epm_container = {};
 function update_epm(epm, svg_area) {
     if (!epm_text) {
         epm_container = svg_area.append('g')
-            .attr('transform', 'translate(0, ' + (height - 25) + ')');
-
-        var epm_box = epm_container.append('rect')
-            .attr('fill', newuser_box_color)
-            .attr('opacity', 0.5)
-            .attr('width', 135)
-            .attr('height', 25);
+            .attr('transform', 'translate(0, ' + (height - 25) + ')')
 
         epm_text = epm_container.append('text')
             .classed('newuser-label', true)

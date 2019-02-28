@@ -1,7 +1,7 @@
-
 *.py[cod]
 .DS_Store
 *.log
+*.orig
 
 # emacs
 *~
@@ -37,4 +37,3 @@ nosetests.xml
 
 # Translations
 *.mo
-

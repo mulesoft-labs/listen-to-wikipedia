@@ -1,6 +1,7 @@
 /* enable sound button */
 .btn {
   background: var(--purple);
+  border: 0;
   border-radius: var(--lg);
   color: var(--white);
   cursor: pointer;
@@ -17,6 +18,8 @@
 }
 
 .btn.sm {
+  border-radius: var(--md);
+  font-size: 13px;
   height: var(--md);
   line-height: var(--md);
   padding: 0 var(--sm);

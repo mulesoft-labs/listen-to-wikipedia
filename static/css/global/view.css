@@ -1,5 +1,6 @@
 .view {
   background: var(--purple-dark);
+  color: var(--white);
   height: 100vh;
   overflow: hidden;
   position: relative;

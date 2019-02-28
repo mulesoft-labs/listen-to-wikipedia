@@ -236,35 +236,8 @@
     testuser()
     */
 
-    for (lang in langs) {
-      if (langs.hasOwnProperty(lang)) {
-        if (lang == 'wikidata') {
-          $('#lang-boxes').append('<p><input type="checkbox" name="' + langs[lang][0] + '" id="' + lang + '-enable"/><label for="' + lang + '-enable">' + langs[lang][0] + ' <span class="conStatus" id="' + lang + '-status"></span></label></p>')
-        } else {
-          $('#lang-boxes').append('<p><input type="checkbox" name="' + langs[lang][0] + '" id="' + lang + '-enable"/><label for="' + lang + '-enable">' + langs[lang][0] + ' Wikipedia <span class="conStatus" id="' + lang + '-status"></span></label></p>')
-        }
-        SOCKETS[lang] = new wikipediaSocket.init(langs[lang][1], lang, svg);
-        var box = $('#' + lang + '-enable');
-        if (box.is(':checked')) {
-          enable(lang)
-        }
-        box.click(make_click_handler(box, lang));
-      }
-    }
-
-    enabled_langs = return_lang_settings();
-
-    if (!enabled_langs.length) {
-      enabled_langs.push(DEFAULT_LANG)
-    }
-    for (var i = 0; i < enabled_langs.length + 1; i ++) {
-      var lang = enabled_langs[i];
-      $('#' + lang + '-enable').prop('checked', true);
-      if (SOCKETS[lang] && (!SOCKETS[lang].connection ||
-                            SOCKETS[lang].connection.readyState == 3)) {
-          SOCKETS[lang].connect();
-      }
-    }
+    initMessages(svg);
+    pollMessages();
 
     $('#filter').tagsInput({
       height: '45px',

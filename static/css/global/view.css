@@ -1,0 +1,29 @@
+.view {
+  background: var(--purple-dark);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+}
+
+.view svg {
+  background: var(--purple-dark);
+  height: 100%;
+  width: 100%;
+}
+
+.footer {
+  background: rgba(0,0,0,.3);
+  bottom: 0;
+  height: var(--lg);
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+/* edits per minute */
+.newuser-label {
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}

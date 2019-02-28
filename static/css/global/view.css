@@ -17,42 +17,22 @@
   bottom: 0;
   height: var(--lg);
   left: 0;
+  padding: 0 var(--lg);
   position: absolute;
   right: 0;
 }
 
 /* enable sound button */
 .unmute {
-  background: var(--purple);
-  border-radius: var(--lg);
   bottom: 0;
-  color: var(--white);
-  cursor: pointer;
   display: table;
-  font-weight: var(--weight-bold);
-  height: var(--lg);
   left: 0;
-  line-height: var(--lg);
   margin: auto;
-  padding: 0 var(--md);
   position: absolute;
   right: 0;
-  text-align: center;
-  text-decoration: none;
-  transition: box-shadow .15s ease-in-out;
   top: 0;
   width: 200px;
   z-index: 10;
-}
-
-.unmute:hover,
-.unmute:active {
-  background: #6312b3; /* slightly darker than var(--purple) */
-}
-
-.unmute:focus {
-  box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--orange);
-  outline: 0;
 }
 
 /* edits per minute */

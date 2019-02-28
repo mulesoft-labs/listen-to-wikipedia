@@ -7,5 +7,6 @@
 @import 'global/style.css';
 @import 'global/view.css';
 
+@import 'component/button.css';
 @import 'component/slider.css';
 

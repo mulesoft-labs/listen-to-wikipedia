@@ -1,0 +1,36 @@
+/* enable sound button */
+.btn {
+  background: var(--purple);
+  border: 0;
+  border-radius: var(--lg);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .15s ease-in-out;
+}
+
+.btn.md {
+  height: var(--lg);
+  line-height: var(--lg);
+  padding: 0 var(--md);
+}
+
+.btn.sm {
+  border-radius: var(--md);
+  font-size: 13px;
+  height: var(--md);
+  line-height: var(--md);
+  padding: 0 var(--sm);
+}
+
+.btn:hover,
+.btn:active {
+  background: #6312b3; /* slightly darker than var(--purple) */
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--orange);
+  outline: 0;
+}

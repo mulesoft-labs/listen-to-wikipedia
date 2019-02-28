@@ -159,7 +159,7 @@
     // Chrome 66 Autoplay Policy Compliance
     if (getChromeVersion() >= 66){
       if (Howler.ctx.state == 'suspended') {
-        $('.js-view').prepend('<a class="unmute">Enable Sound</a>');
+        $('.js-view').prepend('<a class="btn md unmute">Enable Sound</a>');
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut(150));
@@ -295,15 +295,17 @@
 </script>
 
 <section class='view js-view'>
-  <footer class="flex align-center footer">
+  <footer class="flex align-center justify-justified footer">
     <span class="about-link">
       <span id="volumeWrapper" class="interface">
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
-      <button class="test-button">Test</button>
+    </span>
+    <div>
+      <button class="btn sm test-button" type="button">Test</button>
       <input type="checkbox" name="connectToMQ" id="connectToMQ">
       <label for='connectToMQ'>Connect to MQ</label>
-    </span>
+    </div>
   </footer>
 </section>
 

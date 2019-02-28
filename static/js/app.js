@@ -185,7 +185,10 @@ pollMessages = function() {
           handle_message(data);
       })
       .then(function() {
-          setTimeout(pollMessages, 2000);
+        if (should_connect) {
+            // console.log('Polling');
+            setTimeout(pollMessages, 2000);
+        }
       });
 }
 

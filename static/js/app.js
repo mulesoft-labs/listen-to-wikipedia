@@ -158,21 +158,39 @@ function getMessage() {
     }
     else if (res.status == 401) {
       getAuthToken();
+      return null;
     }
     else if (!res.ok) {
         throw new Error('Network response was not ok.');
     }
     return res.json();
   })
-  .then(function (res) {
-    if (res.length > 0) {
-      return JSON.parse(res[0].body);
+  .then(function (msg) {
+    if (msg && msg.length > 0) {
+      console.log(msg[0]);
+      ackMessage(msg[0]);
+      return JSON.parse(msg[0].body);
     } else {
       return null;
     }
   })
   .catch(function (err) {
     console.error('Problem getting a message:', err.statusCode)
+  });
+}
+
+function ackMessage(msg) {
+  var uri = 'https://mq-us-east-1.anypoint.mulesoft.com/api/v1/organizations/f425e3c1-4229-4e46-b6fe-495ab4b65de0/environments/16342834-9571-4fc1-9ac9-8a144f432644/destinations/audio-monitoring-queue/messages/' + msg.headers.messageId;
+
+  return fetch(uri, {
+    headers: {
+      'Authorization': 'bearer ' + authToken,
+      'Content-type': 'application/json'
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      lockId: msg.headers.lockId
+    })
   });
 }
 

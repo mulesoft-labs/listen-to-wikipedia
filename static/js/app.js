@@ -242,7 +242,7 @@ function handle_message(msg) {
     var l = Math.min((totalRequests / 300) * 100, 100);
     var l2 = Math.min((msg.latency / 500) * 100, 100);
     console.log('drone:', l, l2);
-    drone.updateSettings(Math.min((totalRequests / 300) * 100, 100), Math.min((msg.latency / 500) * 100, 100));
+    drone.updateSettings(l, l2);
 }
 
 function emit4xx(i, msg) {

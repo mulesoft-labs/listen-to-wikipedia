@@ -224,6 +224,14 @@ function handle_message(msg) {
     msg.url = 'dd';
 
     wp_action(msg, svg_area);
+
+    if (msg.status == 400) {
+        var ding = new Ding(gctx, calculate_frequency(0, 3), 0.3);
+    }
+    else if (msg.status == 500) {
+        var ding = new Ding(gctx, calculate_frequency(0, 4), 1);
+    }
+
 }
 
 
@@ -254,7 +262,7 @@ function initAudio(ctx) {
     });
 }
 
-function Ding(ctx, freq) {
+function Ding(ctx, freq, r) {
     this.sr = ctx.sampleRate;
 
     var osc1 = ctx.createOscillator();
@@ -290,7 +298,7 @@ function Ding(ctx, freq) {
     osc1.start();
     osc2.start();
     console.log("Created Ding");
-    envGenPluck(vca.gain, 1, 0, dingAttack, dingRelease);
+    envGenPluck(vca.gain, 1, 0, dingAttack, r);
     envGenPluck(filter.frequency, 2000, 300, dingAttack, dingRelease);
 }
 
@@ -424,10 +432,13 @@ function envGenOff(vcaGain, r) {
     vcaGain.linearRampToValueAtTime(0, now + r);
 }
 
-function calculate_frequency(steps) {
+function calculate_frequency(steps, oct) {
+    var octave = oct || 4;
+    var octave_offset = 12 * (octave - 4);
+
     var rootNote = 440;
     var a = Math.pow(2,(1.0/12));
-    var freq = rootNote*(Math.pow(a, steps));
+    var freq = rootNote*(Math.pow(a, steps+octave_offset));
     // console.log(steps);
     console.log(freq);
     return freq;
@@ -443,14 +454,12 @@ function random_note() {
 
     var index = Math.floor(Math.random() * major_key.length);
     console.log(index);
-    return calculate_frequency(selected_key[index] + octave_offset);
+    return calculate_frequency(selected_key[index], octave);
 }
 
 function play_sound() {
     // var pluck = new Pluck( gctx, random_note() );
     // pluck.play( random_note() );
-
-    var ding = new Ding(gctx, random_note());
 
     if (!droneIsPlaying) {
         play_drone();

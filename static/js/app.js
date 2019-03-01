@@ -242,7 +242,10 @@ var masterGain = {};
 var gctx = {};
 
 var drone = {};
-var droneIsPlaying = false;
+var static = {};
+// var droneIsPlaying = false;
+
+var bufferSize = 4096;
 
 //Ding default ADSR
 var dingAttack = 0.01;
@@ -260,19 +263,100 @@ function initAudio(ctx) {
     masterGain.connect(ctx.destination);
 
     //Load reverb and create a reverb node
-    var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
+    // var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
     // var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
+    var reverbUrl = "./sounds/impulses/TerrysTypingRoom.m4a";
+    // var reverbUrl = "./sounds/impulses/DomesticLivingRoom.m4a";
     reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
         reverbNode.connect(masterGain);
 
         //Ready to hook stuff up!
-        // play_drone();
-        drone = new Drone( gctx );
-        droneIsPlaying = true;
+        drone = new Drone(ctx);
+        // static = new Static(ctx);
     });
 }
 
 //Synthesis functions
+function Static(ctx) {
+    this.sr = ctx.sampleRate;
+    this.pro = ctx.createScriptProcessor(bufferSize, 0, 1);
+
+    this.staticGain = ctx.createGain();
+    this.staticGain.gain.value = 1;
+
+    this.pro.connect(this.staticGain);
+    this.staticGain.connect(masterGain);
+
+    this.playing = false;
+    this.play();
+
+    var that = this;
+    function crackle() {
+        if (that.playing) {
+            that.staticGain.gain.value = Math.random() * 0.5 + 0.2;
+            setTimeout(crackle, 50 + Math.random()*300);
+        }
+    }
+    crackle();
+}
+
+Static.prototype.play = (function() {
+    var b0, b1, b2, b3, b4, b5, b6;
+    b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+
+    this.pro.onaudioprocess = function(e) {
+        var output = e.outputBuffer.getChannelData(0);
+
+        // White noise
+        // for (var i = 0; i < bufferSize; i++) {
+        //     output[i] = Math.random() * 2 - 1;
+        // }
+
+        // Pink noise
+        for (var i = 0; i < bufferSize; i++) {
+            var white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+            output[i] *= 0.11; // (roughly) compensate for gain
+            b6 = white * 0.115926;
+        }
+    }.bind( this );
+    this.playing = true;
+});
+
+Static.prototype.pause = function() {
+  this.playing = false;
+  this.staticGain.gain.value = 0;
+};
+
+// var pinkNoise = (function() {
+//     var b0, b1, b2, b3, b4, b5, b6;
+//     b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+//     var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
+//     node.onaudioprocess = function(e) {
+//         var output = e.outputBuffer.getChannelData(0);
+//         for (var i = 0; i < bufferSize; i++) {
+//             var white = Math.random() * 2 - 1;
+//             b0 = 0.99886 * b0 + white * 0.0555179;
+//             b1 = 0.99332 * b1 + white * 0.0750759;
+//             b2 = 0.96900 * b2 + white * 0.1538520;
+//             b3 = 0.86650 * b3 + white * 0.3104856;
+//             b4 = 0.55000 * b4 + white * 0.5329522;
+//             b5 = -0.7616 * b5 - white * 0.0168980;
+//             output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+//             output[i] *= 0.11; // (roughly) compensate for gain
+//             b6 = white * 0.115926;
+//         }
+//     }
+//     return node;
+// })();
+
+
 function Ding(ctx, freq, r) {
     this.sr = ctx.sampleRate;
 
@@ -463,13 +547,13 @@ function tween(amount, start, end) {
 }
 
 function updateMasterGain(volume) {
-    var newGain = volume * 0.3
-    masterGain.gain.value = newGain;
-    if (newGain < 0.02) {
-        masterGain.gain.value = 0;
-    }
+    // var newGain = volume * 0.3
+    // masterGain.gain.value = newGain;
+    // if (newGain < 0.02) {
+    //     masterGain.gain.value = 0;
+    // }
     // console.log(masterGain.gain.value);
-    // drone.updateSettings(volume*100.0, volume*100.0);
+    drone.updateSettings(volume*100.0, volume*100.0);
 }
 
 function envGenPluck(vcaGain, upper, lower, a, r) {
@@ -506,7 +590,7 @@ function calculate_frequency(steps, oct) {
     var a = Math.pow(2,(1.0/12));
     var freq = rootNote*(Math.pow(a, steps+octave_offset));
     // console.log(steps);
-    console.log(freq);
+    // console.log(freq);
     return freq;
 }
 

@@ -149,7 +149,10 @@
 
 /* circle label */
 .article-label {
-  font-size: 11px;
+  font-family: var(--vcr);
+  font-size: 30px;
+  font-weight: var(--weight-bold);
+  transform: translateY(50px);
   text-shadow:
     1px 1px 0 var(--purple-dark),
     -1px -1px 0 var(--purple-dark),

@@ -45,37 +45,37 @@
 
 @keyframes oscillator-1x {
   0% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
   50% {
-    filter: blur(.5px) brightness(1.5);
+    filter: blur(1px) brightness(1.5);
   }
   100% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
 }
 
 @keyframes oscillator-2x {
   0% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
   50% {
-    filter: blur(.5px) brightness(1.5);
+    filter: blur(1px) brightness(1.5);
   }
   100% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
 }
 
 @keyframes oscillator-max {
   0% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
   50% {
-    filter: blur(.5px) brightness(2);
+    filter: blur(1px) brightness(2);
   }
   100% {
-    filter: blur(.5px) brightness(1);
+    filter: blur(1px) brightness(1);
   }
 }
 
@@ -85,21 +85,21 @@
   }
   .67%,
   40% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
   40.1% {
     filter: blur(5px) invert(100%) saturate(10);
   }
   40.77%,
   60% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
   60.1% {
     filter: blur(5px) invert(100%) saturate(10);
   }
   60.77%,
   100% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
 }
 

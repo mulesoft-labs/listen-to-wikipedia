@@ -93,7 +93,7 @@ function wp_action(data, svg_area, silent) {
         if (no_label) {
             no_label = false;
             circle_container.append('text')
-                .text(label_text.toString().substring(0,3)) // to simulate status code length
+                .text(label_text)
                 .classed('article-label', true)
                 .attr('text-anchor', 'middle')
                 .transition()
@@ -108,7 +108,7 @@ function wp_action(data, svg_area, silent) {
 
     if (s_titles && !silent) {
         var text = circle_container.append('text')
-            .text(label_text.toString().substring(0,3)) // to simulate status code length
+            .text(label_text)
             .classed('article-label', true)
             .attr('text-anchor', 'middle')
             .transition()

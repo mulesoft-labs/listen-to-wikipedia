@@ -219,6 +219,7 @@ function handle_message(msg) {
 
     console.log(msg);
 
+    msg.change_size = 1;
     msg.page_title = 'title + ' + Date.now();
     msg.url = 'dd';
 

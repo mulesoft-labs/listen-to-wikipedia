@@ -226,10 +226,10 @@ function handle_message(msg) {
     wp_action(msg, svg_area);
 
     if (msg.status == 400) {
-        var ding = new Ding(gctx, calculate_frequency(0, 3), 0.3);
+        var ding = new Ding(gctx, calculate_frequency(0, 3), 0.1);
     }
     else if (msg.status == 500) {
-        var ding = new Ding(gctx, calculate_frequency(0, 4), 1);
+        var ding = new Ding(gctx, calculate_frequency(0, 4), 2);
     }
 
 }
@@ -240,10 +240,12 @@ function handle_message(msg) {
 var reverbNode = {};
 var masterGain = {};
 var gctx = {};
+
+var drone = {};
 var droneIsPlaying = false;
 
 //Ding default ADSR
-var dingAttack = 0.001;
+var dingAttack = 0.01;
 var dingDecay = 0.1;
 var dingSustain = 1;
 var dingRelease = 0.4;
@@ -254,17 +256,19 @@ function initAudio(ctx) {
     gctx = ctx;
 
     masterGain = ctx.createGain();
-    masterGain.gain = 1;
+    masterGain.gain.value = 0.3;
     masterGain.connect(ctx.destination);
 
     //Load reverb and create a reverb node
     var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
-    var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
+    // var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
     reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
         reverbNode.connect(masterGain);
 
         //Ready to hook stuff up!
-        play_drone();
+        // play_drone();
+        drone = new Drone( gctx );
+        droneIsPlaying = true;
     });
 }
 
@@ -297,6 +301,7 @@ function Ding(ctx, freq, r) {
     osc2.connect(filter);
 
     filter.connect(vca);
+    filter.Q.value = 10;
 
     vca.connect(gain);
 
@@ -306,7 +311,7 @@ function Ding(ctx, freq, r) {
     osc2.start();
     console.log("Created Ding");
     envGenPluck(vca.gain, 1, 0, dingAttack, r);
-    envGenPluck(filter.frequency, 2000, 300, dingAttack, dingRelease);
+    envGenPluck(filter.frequency, 1800, 100, dingAttack, dingRelease);
 }
 
 // For request events
@@ -361,17 +366,17 @@ function Drone(ctx) {
     lfo1.frequency.value = 0.1;
 
     var filterLFOGain = ctx.createGain();
-    filterLFOGain.gain.value = 150;
+    filterLFOGain.gain.value = 100;
 
     var volumeLFOGain = ctx.createGain();
-    volumeLFOGain.gain.value = 0.2;
+    volumeLFOGain.gain.value = 0.15;
 
 
     var gain1 = ctx.createGain();
-    gain1.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain1.gain.setValueAtTime(0.5, ctx.currentTime);
 
     var gain2 = ctx.createGain();
-    gain2.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain2.gain.setValueAtTime(0.5, ctx.currentTime);
 
 
     var filter1 = ctx.createBiquadFilter();
@@ -407,12 +412,64 @@ function Drone(ctx) {
     osc1.start();
     osc2.start();
     lfo1.start();
+
+    this.updateSettings = function (rate, growl) {
+        //Rate & Growl should both be in the range 0 (default state) to 100 (max state)
+        //Rate controls strength and speed of LFO, growl controls volume
+
+        var normRate = rate/100.0
+        var normGrowl = growl/100.0
+
+        var minValues = {
+            'lfoFreq': 0.1,
+            'volumeLFOGain': 0.15,
+
+            'filterLFOGain': 100,
+            'filter1Freq': calculate_frequency(-20),
+            'filter1Q': 3,
+            'filter2Freq': calculate_frequency(-30),
+            'filter2Q': 5
+        }
+
+        var maxValues = {
+            'lfoFreq': 1.5,
+            'volumeLFOGain': 0.22,
+
+            'filterLFOGain': 600,
+            'filter1Freq': calculate_frequency(12),
+            'filter1Q': 15,
+            'filter2Freq': calculate_frequency(12),
+            'filter2Q': 20
+        }
+
+        //Rate settings
+        lfo1.frequency.value =      tween(normRate, minValues.lfoFreq, maxValues.lfoFreq);
+        volumeLFOGain.gain.value =  tween(normRate, minValues.volumeLFOGain, maxValues.volumeLFOGain);
+
+
+        //Growl settings
+        filterLFOGain.gain.value =  tween(normGrowl, minValues.filterLFOGain, maxValues.filterLFOGain);
+        filter1.frequency.value =   tween(normGrowl, minValues.filter1Freq, maxValues.filter1Freq);
+        filter1.Q.value=            tween(normGrowl, minValues.filter1Q, maxValues.filter1Q);
+        filter1.frequency.value =   tween(normGrowl, minValues.filter2Freq, maxValues.filter2Freq);
+        filter1.Q.value=            tween(normGrowl, minValues.filter2Q, maxValues.filter2Q);
+    }
 }
 
 
 //Helpers
+function tween(amount, start, end) {
+    return start + (amount * (end - start));
+}
+
 function updateMasterGain(volume) {
-    masterGain.gain.value = volume * 0.6;
+    var newGain = volume * 0.3
+    masterGain.gain.value = newGain;
+    if (newGain < 0.02) {
+        masterGain.gain.value = 0;
+    }
+    // console.log(masterGain.gain.value);
+    // drone.updateSettings(volume*100.0, volume*100.0);
 }
 
 function envGenPluck(vcaGain, upper, lower, a, r) {

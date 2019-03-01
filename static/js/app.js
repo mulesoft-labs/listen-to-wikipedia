@@ -216,6 +216,10 @@ function handle_message(msg) {
         return;
     }
 
+    if (msg.latency == 0) {
+      msg.alarm = 'off';
+    }
+
     if (msg.alarm === 'on') {
       handle_alarm_on();
     }

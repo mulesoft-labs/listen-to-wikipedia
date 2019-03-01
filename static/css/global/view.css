@@ -1,5 +1,4 @@
 .main {
-  background: linear-gradient(#291638, #0e0813);
   color: var(--white);
   height: 100vh;
   overflow: hidden;
@@ -24,7 +23,36 @@
 }
 
 .view {
+  background: linear-gradient(#291638, #0e0813);
   filter: blur(.5px);
+}
+
+.view.funk {
+  animation: funk 15s infinite;
+}
+
+@keyframes funk {
+  0% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  .67%,
+  40% {
+    filter: blur(.5px);
+  }
+  40.1% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  40.77%,
+  60% {
+    filter: blur(.5px);
+  }
+  60.1% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  60.77%,
+  100% {
+    filter: blur(.5px);
+  }
 }
 
 .view,

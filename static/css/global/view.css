@@ -1,5 +1,9 @@
+.view,
+.view svg {
+  background: linear-gradient(#291638, #0e0813);
+}
+
 .view {
-  background: var(--purple-dark);
   color: var(--white);
   height: 100vh;
   overflow: hidden;
@@ -11,29 +15,28 @@
   background: url(../../img/scanlines.svg);
   bottom: 0;
   content: "";
-  height: 100vh;
+  height: 100%;
   left: 0;
   opacity: .05;
-  position: fixed;
+  position: absolute;
   pointer-events: none;
   right: 0;
   top: 0;
-  width: 100vw;
+  width: 100%;
   z-index: 100;
 }
 
 .view svg {
-  background: var(--purple-dark);
   height: 100%;
   width: 100%;
 }
 
 .footer {
-  background: rgba(0,0,0,.3);
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.75));
   bottom: 0;
   height: var(--lg);
   left: 0;
-  padding: 0 var(--lg);
+  padding: 0 var(--md);
   position: absolute;
   right: 0;
 }

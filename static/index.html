@@ -17,6 +17,8 @@
 <script src="js/howler.min.js"></script>
 <script src="js/jquery.tagsinput.js"></script>
 
+<script src="http://reverbjs.org/reverb.js"></script>
+
 <script>
   var global_mute = false;
   var global_volume = 50;
@@ -163,6 +165,7 @@
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut(150));
+        reverbjs.extend(Howler.ctx);
         gctx = Howler.ctx;
       });
     }

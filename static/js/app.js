@@ -35,9 +35,10 @@ function wp_action(data, svg_area, silent) {
 
     var x = Math.random() * (width - size) + size;
     var y = Math.random() * (height - size) + size;
-    if (!silent) {
-        play_sound();
-    }
+    // if (!silent) {
+    //     // play_sound();
+    // }
+    // Audio is handled elsewhere now
 
     if (silent) {
         var starting_opacity = 0.2;

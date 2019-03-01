@@ -25,6 +25,12 @@
   text-shadow: -1px 0 var(--blue);
 }
 
+/* turbo mode */
+.turbo-mode [data-text]::before,
+.turbo-mode [data-text]::after {
+  display: none;
+}
+
 @keyframes glitch {
   0% {
     clip: rect(70px, 450px, 76px, 0);

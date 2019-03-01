@@ -238,30 +238,37 @@ function handle_message(msg) {
 
 // AUDIO STUFF
 var reverbNode = {};
+var masterGain = {};
 var gctx = {};
 var droneIsPlaying = false;
 
-//Ding ADSR
+//Ding default ADSR
 var dingAttack = 0.001;
 var dingDecay = 0.1;
 var dingSustain = 1;
 var dingRelease = 0.4;
 
+//Initialize
 function initAudio(ctx) {
     console.log("Initialized audio");
     gctx = ctx;
+
+    masterGain = ctx.createGain();
+    masterGain.gain = 1;
+    masterGain.connect(ctx.destination);
 
     //Load reverb and create a reverb node
     var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
     var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
     reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
-        reverbNode.connect(ctx.destination);
+        reverbNode.connect(masterGain);
 
         //Ready to hook stuff up!
         play_drone();
     });
 }
 
+//Synthesis functions
 function Ding(ctx, freq, r) {
     this.sr = ctx.sampleRate;
 
@@ -354,10 +361,10 @@ function Drone(ctx) {
     lfo1.frequency.value = 0.1;
 
     var filterLFOGain = ctx.createGain();
-    filterLFOGain.gain.value = 300;
+    filterLFOGain.gain.value = 150;
 
     var volumeLFOGain = ctx.createGain();
-    volumeLFOGain.gain.value = 0.4;
+    volumeLFOGain.gain.value = 0.2;
 
 
     var gain1 = ctx.createGain();
@@ -368,12 +375,12 @@ function Drone(ctx) {
 
 
     var filter1 = ctx.createBiquadFilter();
-    filter1.frequency.setValueAtTime(calculate_frequency(0), ctx.currentTime);
+    filter1.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
     filter1.Q.setValueAtTime(8, ctx.currentTime);
     filter1.type = 'lowpass';
 
     var filter2 = ctx.createBiquadFilter();
-    filter2.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
+    filter2.frequency.setValueAtTime(calculate_frequency(-30), ctx.currentTime);
     filter2.Q.setValueAtTime(12, ctx.currentTime);
     filter2.type = 'lowpass';
 
@@ -397,8 +404,6 @@ function Drone(ctx) {
     // gain1.connect(ctx.destination);
     // gain2.connect(ctx.destination);
 
-    reverbNode.connect(ctx.destination);
-
     osc1.start();
     osc2.start();
     lfo1.start();
@@ -406,6 +411,10 @@ function Drone(ctx) {
 
 
 //Helpers
+function updateMasterGain(volume) {
+    masterGain.gain.value = volume * 0.6;
+}
+
 function envGenPluck(vcaGain, upper, lower, a, r) {
     var now = gctx.currentTime;
     vcaGain.cancelScheduledValues(0);

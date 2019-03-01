@@ -52,6 +52,7 @@
           Howler.mute();
         } else {
           Howler.unmute();
+          updateMasterGain(global_volume/100.0);
           Howler.volume(global_volume * .01);
         }
     }});

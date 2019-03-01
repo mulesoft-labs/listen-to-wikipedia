@@ -314,13 +314,14 @@
     <div class="view funk js-view">
     </div>
   </section>
-  <footer class="flex align-center justify-justified footer">
-    <span class="flex about-link">
+  <footer class="flex align-center justify-justified footer js-footer">
+    <div class="flex justify-left js-left about-link">
       <span id="volumeWrapper" class="interface">
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
-    </span>
-    <div class="flex shrink">
+    </div>
+    <div class="flex justify-center js-center"></div>
+    <div class="flex justify-right js-right">
       <button class="btn sm test-button" type="button">Ping</button>
       <label class="flex shrink align-center toggle">MQ Data
         <input type="checkbox" name="connectToMQ" id="connectToMQ">

@@ -261,10 +261,10 @@ function Drone(ctx) {
     osc2.frequency.setValueAtTime(calculate_frequency(-36)+0.5, ctx.currentTime);
 
     lfo1.type = 'sine';
-    lfo1.frequency.value = 0.2;
+    lfo1.frequency.value = 2;
 
     var lfoGain = ctx.createGain();
-    lfoGain.gain.value = 300;
+    lfoGain.gain.value = 0.4;
 
     var gain1 = ctx.createGain();
     gain1.gain.setValueAtTime(0.4, ctx.currentTime);
@@ -273,13 +273,13 @@ function Drone(ctx) {
     gain2.gain.setValueAtTime(0.2, ctx.currentTime);
 
     var filter1 = ctx.createBiquadFilter();
-    filter1.frequency.setValueAtTime(calculate_frequency(-10), ctx.currentTime);
-    filter1.Q.setValueAtTime(15, ctx.currentTime);
+    filter1.frequency.setValueAtTime(calculate_frequency(12), ctx.currentTime);
+    filter1.Q.setValueAtTime(5, ctx.currentTime);
     filter1.type = 'lowpass';
 
     var filter2 = ctx.createBiquadFilter();
-    filter2.frequency.setValueAtTime(calculate_frequency(-10), ctx.currentTime);
-    filter2.Q.setValueAtTime(15, ctx.currentTime);
+    filter2.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
+    filter2.Q.setValueAtTime(5, ctx.currentTime);
     filter2.type = 'lowpass';
 
     var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
@@ -288,13 +288,14 @@ function Drone(ctx) {
         osc2.connect(filter2);
 
         lfo1.connect(lfoGain);
-        lfoGain.connect(filter1.frequency);
+        lfoGain.connect(gain1.gain);
+        lfoGain.connect(gain2.gain);
 
         filter1.connect(gain1);
         filter2.connect(gain2);
 
         gain1.connect(reverbNode);
-        gain2.connect(reverbNode);
+        // gain2.connect(reverbNode);
 
         reverbNode.connect(ctx.destination);
 
@@ -337,7 +338,7 @@ function play_sound() {
     // pluck.play( random_note() );
 
     if (!droneIsPlaying) {
-        play_drone();
+        // play_drone();
     }
 
 }

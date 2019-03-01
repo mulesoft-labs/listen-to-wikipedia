@@ -1,14 +1,6 @@
 function wp_action(data, svg_area, silent) {
     console.log('wp_action');
     var silent = silent || false;
-    if (!silent) {
-        total_edits += 1;
-    }
-    if (total_edits == 1) {
-        $('#edit_counter').html('You have listened to <span>' + total_edits + ' edit</span>.');
-    } else {
-        $('#edit_counter').html('You have listened to a total of <span>' + insert_comma(total_edits) + ' edits</span>.');
-    }
     var now = new Date();
     edit_times.push(now);
     to_save = [];
@@ -195,7 +187,6 @@ function ackMessage(msg) {
   });
 }
 
-
 initMessages = function(svg) {
     svg_area = svg;
 }
@@ -259,8 +250,6 @@ function emit5xx(i, msg) {
     }, svg_area);
   }, Math.random() * 5000);
 }
-
-
 
 // AUDIO STUFF
 var reverbNode = {};
@@ -482,7 +471,6 @@ function Drone(ctx) {
     }
 }
 
-
 //Helpers
 function tween(amount, start, end) {
     return start + (amount * (end - start));
@@ -563,9 +551,6 @@ function play_drone() {
     droneIsPlaying = true;
 }
 
-
-
-
 function play_random_swell() {
     var index = Math.round(Math.random() * (swells.length - 1));
     swells[index].play();
@@ -616,84 +601,6 @@ function newuser_action(data, lid, svg_area) {
 
 }
 
-var return_hash_settings = function() {
-    var hash_settings = window.location.hash.slice(1).split(',');
-    for (var i = 0; i < hash_settings.length + 1; i ++) {
-        if (hash_settings[i] === '') {
-            hash_settings.splice(i, 1);
-        }
-    }
-    return hash_settings;
-};
-
-var return_lang_settings = function() {
-    return [];
-};
-
-var set_hash_settings = function (langs) {
-    if (langs[0] === '') {
-        langs.splice(0, 1);
-    }
-    window.location.hash = '#' + langs.join(',');
-};
-
-var enable = function(setting) {
-    var hash_settings = return_hash_settings();
-    if (setting && hash_settings.indexOf(setting) < 0) {
-        hash_settings.push(setting);
-    }
-    set_hash_settings(hash_settings);
-};
-
-var disable = function(setting) {
-    var hash_settings = return_hash_settings();
-    var setting_i = hash_settings.indexOf(setting);
-    if (setting_i >= 0) {
-        hash_settings.splice(setting_i, 1);
-    }
-    set_hash_settings(hash_settings);
-};
-
-window.onhashchange = function () {
-    var hash_settings = return_hash_settings();
-    for (var lang in SOCKETS) {
-        if (hash_settings.indexOf(lang) >= 0) {
-            if (!SOCKETS[lang].connection || SOCKETS[lang].connection.readyState == 3) {
-                SOCKETS[lang].connect();
-                $('#' + lang + '-enable').prop('checked', true);
-            }
-        } else {
-            if ($('#' + lang + '-enable').is(':checked')) {
-                $('#' + lang + '-enable').prop('checked', false);
-            }
-            if (SOCKETS[lang].connection) {
-                SOCKETS[lang].close();
-            }
-        }
-    }
-    if (hash_settings.indexOf('notitles') >= 0) {
-        s_titles = false;
-    } else {
-        s_titles = true;
-    }
-    if (hash_settings.indexOf('nowelcomes') >= 0) {
-        s_welcome = false;
-    } else {
-        s_welcome = true;
-    }
-    set_hash_settings(hash_settings);
-};
-
-var make_click_handler = function($box, setting) {
-    return function() {
-            if ($box.is(':checked')) {
-                enable(setting);
-            } else {
-                disable(setting);
-            }
-        };
-};
-
 var epm_text = false;
 var epm_container = {};
 
@@ -716,52 +623,6 @@ function update_epm(epm, svg_area) {
 var tag_area = {},
     tag_text = false,
     tag_box = false;
-
-function update_tag_warning(svg_area) {
-    if (TAG_FILTERS.length == 0) {
-        if (!$.isEmptyObject(tag_area)) {
-            tag_area.remove();
-            tag_area = {}, tag_text = false;
-        }
-        return
-    }
-    if (!tag_text) {
-        tag_area = svg_area.append('g');
-        tag_box = tag_area.append('rect')
-            .attr('fill', newuser_box_color)
-            .attr('opacity', 0.5)
-            .attr('height', 25);
-        tag_text = tag_area.append('text')
-            .classed('newuser-label', true)
-            .attr('transform', 'translate(5, 18)')
-            .style('font-size', '.8em');
-    }
-    tag_area.attr('transform', 'translate(0, ' + (height - 50) + ')');
-    tag_text.text('Listening to: #' + TAG_FILTERS.join(', #'));
-    var tag_bbox = tag_text.node().getBBox();
-    tag_box.attr('width', tag_bbox.width + 10);
-    s_welcome = false;
-}
-
-var insert_comma = function(s) {
-    s = s.toFixed(0);
-    if (s.length > 2) {
-        var l = s.length;
-        var res = "" + s[0];
-        for (var i=1; i<l-1; i++) {
-            if ((l - i) % 3 == 0)
-                res += ",";
-            res +=s[i];
-        }
-        res +=s[l-1];
-
-        res = res.replace(',.','.');
-
-        return res;
-    } else {
-        return s;
-    }
-}
 
 function getChromeVersion () {
     // From https://stackoverflow.com/questions/4900436/how-to-detect-the-installed-chrome-version

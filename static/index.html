@@ -68,8 +68,7 @@
       note_overlap = 15,
       note_timeout = 300,
       current_notes = 0,
-      max_life = 10000, // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
-      DEFAULT_LANG = 'en';
+      max_life = 10000; // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
 
   /* Colors
      ====== */
@@ -84,52 +83,6 @@
       edit_color = '#fff',
       sound_totals = 51,
       total_edits = 0;
-
-  /* Languages
-     ========= */
-
-  var langs = {
-    'en': ['English', 'ws://wikimon.hatnote.com:9000'],
-    'de': ['German', 'ws://wikimon.hatnote.com:9010'],
-    'ru': ['Russian', 'ws://wikimon.hatnote.com:9020'],
-    'uk': ['Ukrainian', 'ws://wikimon.hatnote.com:9310'],
-    'ja': ['Japanese', 'ws://wikimon.hatnote.com:9030'],
-    'es': ['Spanish', 'ws://wikimon.hatnote.com:9040'],
-    'fr': ['French', 'ws://wikimon.hatnote.com:9050'],
-    'nl': ['Dutch', 'ws://wikimon.hatnote.com:9060'],
-    'it': ['Italian', 'ws://wikimon.hatnote.com:9070'],
-    'sv': ['Swedish', 'ws://wikimon.hatnote.com:9080'],
-    'ar': ['Arabic', 'ws://wikimon.hatnote.com:9090'],
-    'fa': ['Farsi', 'ws://wikimon.hatnote.com:9210'],
-    'he': ['Hebrew' , 'ws://wikimon.hatnote.com:9230'],
-    'id': ['Indonesian', 'ws://wikimon.hatnote.com:9100'],
-    'zh': ['Chinese', 'ws://wikimon.hatnote.com:9240'],
-    'as': ['Assamese', 'ws://wikimon.hatnote.com:9150'],
-    'hi': ['Hindi', 'ws://wikimon.hatnote.com:9140'],
-    'bn': ['Bengali', 'ws://wikimon.hatnote.com:9160'],
-    'pa': ['Punjabi', 'ws://wikimon.hatnote.com:9120'],
-    'te': ['Telugu', 'ws://wikimon.hatnote.com:9165'],
-    'ta': ['Tamil', 'ws://wikimon.hatnote.com:9110'],
-    'ml': ['Malayalam', 'ws://wikimon.hatnote.com:9250'],
-    'mr': ['Western Mari', 'ws://wikimon.hatnote.com:9130'],
-    'kn': ['Kannada', 'ws://wikimon.hatnote.com:9170'],
-    'or': ['Oriya', 'ws://wikimon.hatnote.com:9180'],
-    'sa': ['Sanskrit', 'ws://wikimon.hatnote.com:9190'],
-    'gu': ['Gujarati' , 'ws://wikimon.hatnote.com:9200'],
-    'pl': ['Polish' , 'ws://wikimon.hatnote.com:9260'],
-    'mk': ['Macedonian' , 'ws://wikimon.hatnote.com:9270'],
-    'be': ['Belarusian' , 'ws://wikimon.hatnote.com:9280'],
-    'sr': ['Serbian' , 'ws://wikimon.hatnote.com:9290'],
-    'bg': ['Bulgarian' , 'ws://wikimon.hatnote.com:9300'],
-    'hu': ['Hungarian', 'ws://wikimon.hatnote.com:9320'],
-    'fi': ['Finnish', 'ws://wikimon.hatnote.com:9330'],
-    'no': ['Norwegian', 'ws://wikimon.hatnote.com:9340'],
-    'el': ['Greek', 'ws://wikimon.hatnote.com:9350'],
-    'eo': ['Esperanto', 'ws://wikimon.hatnote.com:9360'],
-    'pt': ['Portuguese', 'ws://wikimon.hatnote.com:9370'],
-    'et': ['Estonian', 'ws://wikimon.hatnote.com:9380'],
-    'wikidata': ['Wikidata' , 'ws://wikimon.hatnote.com:9220']
-  }
 
   /*
      ============== */
@@ -149,8 +102,7 @@
       swells = [],
       all_loaded = false,
       s_titles = true,
-      s_welcome = true,
-      s_langs = [];
+      s_welcome = true;
 
   var user_announcements = false;
   setTimeout(function() {
@@ -183,16 +135,9 @@
                      ';} .bot {fill:' + bot_color +
                      ';} .anon {fill:' + anon_color +
                      ';} .bot </style>');
-    $('body').append('<div id="loading"><p>Loading sound files ...</p></div>')
+    $('body').append('<div id="loading" class="btn loading" data-text="LOADING">LOADING</div>')
 
     var svg = d3.select('.js-view').append('svg');
-
-    $('#background_mode').click(
-      function() {$('.js-view svg').toggle();}
-    );
-    $('#hide_rc_box').click(
-      function() {$('#rc-log').toggle();}
-    );
 
     const testButton = document.querySelector('.test-button');
     testButton.addEventListener('click', () => {
@@ -286,26 +231,6 @@
       }
     };
     handleMQToggle();
-
-    $('#filter').tagsInput({
-      height: '45px',
-      width: '80%',
-      'delimiter': [' ', ','],
-      defaultText: 'Add a tag',
-      defaultTextWidth: 100,
-      unique: false,
-      onChange: function() {
-        TAG_FILTERS = [];
-        $('.tag span').each(function(val) {
-          var tag = $(this).text().trim().replace('#', '').toLowerCase();
-          if($.inArray(tag, TAG_FILTERS) === -1){
-            TAG_FILTERS.push(tag);
-          }
-        });
-        update_tag_warning(svg);
-        console.log('Watching for: ' + TAG_FILTERS)
-      }
-    });
   })
 </script>
 
@@ -402,34 +327,3 @@
     </div>
   </footer>
 </main>
-
-<div id="content">
-    <div class="bg">
-        <div id="rc-log-c">
-            <h3>Recent changes</h3>
-            <ul id="rc-log">
-            </ul>
-             <div class="note">
-              <p id="edit_counter"></p>
-              <p>For more, see Wikipedia’s RecentChanges pages for <a href="http://www.wikipedia.org/">each language</a>.</p>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="foot">
-    <h3>Settings</h3>
-    <p><input type="checkbox" name="welcome" id="welcome">
-    <label for="welcome">Hide new user announcements</label></p>
-    <p><input type="checkbox" name="titles" id="titles">
-    <label for="titles">Hide article titles</label></p>
-    <p><input type="checkbox" name="hide_rc_box" id="hide_rc_box">
-    <label for="hide_rc_box">Hide recent changes console</label></p>
-    <p><input type="checkbox" name="background_mode" id="background_mode">
-    <label for="background_mode">Hide graphics for background listening</label></p>
-    <h3>Languages</h3>
-    <div id="lang-boxes"> </div>
-    <div class="clear"><br/></div>
-    <h3>Tags</h3>
-    <p>Listen for edits with a hashtag in the edit summary. Try it yourself! To do this, enter a hashtag below, then go make an edit and the same tag in the <a href="https://en.wikipedia.org/wiki/Help:Edit_summary">edit summary</a> of your article. If you have tags here, you will only hear edits with those tags.</p>
-    <p><input id="filter" type="text" value=""></p>
-</div>

@@ -201,67 +201,64 @@ initMessages = function(svg) {
 }
 
 pollMessages = function() {
-    getMessage()
-      .then(data => {
-          handle_message(data);
-      })
-      .then(function() {
-        if (should_connect) {
-            // console.log('Polling');
-            setTimeout(pollMessages, 500);
-        }
-      });
+  getMessage()
+    .then(data => handle_message(data))
+    .then(() => {
+      if (should_connect) {
+        // console.log('Polling');
+        setTimeout(pollMessages, 500);
+      }
+    });
 }
 
 function handle_message(msg) {
-    if (!msg) {
-        return;
-    }
+  if (!msg) {
+    return;
+  }
 
-    if (msg.latency < 1) {
-      msg.alarm = 'off';
-    }
+  if (msg.latency < 1) {
+    msg.alarm = 'off';
+  }
 
-    if (msg.alarm === 'on') {
-      handle_alarm_on();
-    }
-    else if (msg.alarm === 'off') {
-      handle_alarm_off();
-    }
+  if (msg.alarm === 'on') {
+    handle_alarm_on();
+  }
+  else if (msg.alarm === 'off') {
+    handle_alarm_off();
+  }
 
-    var totalRequests = 0;
-    for (var key in msg.codes) {
-      totalRequests += msg.codes[key].count;
-    }
+  var totalRequests = 0;
+  for (var key in msg.codes) {
+    totalRequests += msg.codes[key].count;
+  }
 
-    console.log(msg);
-    if (msg.codes['429']) {
-      for (var i = 0; i < Math.min(msg.codes['429'].count, 5); i++) {
-        emit4xx(i, msg);
-      }
+  console.log(msg);
+  if (msg.codes['429']) {
+    for (var i = 0; i < Math.min(msg.codes['429'].count, 5); i++) {
+      emit4xx(i, msg);
     }
-    if (msg.codes['500']) {
-      for (var i = 0; i < Math.min(msg.codes['500'].count, 5); i++) {
-        emit5xx(i, msg);
-      }
+  }
+  if (msg.codes['500']) {
+    for (var i = 0; i < Math.min(msg.codes['500'].count, 5); i++) {
+      emit5xx(i, msg);
     }
-    var l = Math.min((totalRequests / 300) * 100, 100);
-    var l2 = Math.min((msg.latency / 500) * 100, 100);
-    console.log('drone:', l, l2);
-    drone.updateSettings(l, l2);
+  }
+  var l = Math.min((totalRequests / 300) * 100, 100);
+  var l2 = Math.min((msg.latency / 500) * 100, 100);
+  drone.updateSettings(l, l2);
 
-    // drone animation
-    let oscillateRate = l + l2;
-    if (oscillateRate <= 67) {
-      oscillator.classList.remove('oscillator-2x');
-      oscillator.classList.remove('oscillator-max');
-    } else if (oscillateRate > 67 && oscillateRate < 133) {
-      oscillator.classList.remove('oscillator-max');
-      oscillator.classList.add('oscillator-2x');
-    } else if (oscillateRate >= 134) {
-      oscillator.classList.remove('oscillator-2x');
-      oscillator.classList.add('oscillator-max');
-    }
+  // drone animation
+  let oscillateRate = l + l2;
+  if (oscillateRate <= 67) {
+    oscillator.classList.remove('oscillator-2x');
+    oscillator.classList.remove('oscillator-max');
+  } else if (oscillateRate > 67 && oscillateRate < 133) {
+    oscillator.classList.remove('oscillator-max');
+    oscillator.classList.add('oscillator-2x');
+  } else if (oscillateRate >= 134) {
+    oscillator.classList.remove('oscillator-2x');
+    oscillator.classList.add('oscillator-max');
+  }
 }
 
 function emit4xx(i, msg) {
@@ -337,6 +334,7 @@ var dingRelease = 0.4;
 //Initialize
 function initAudio(ctx) {
     console.log("Initialized audio");
+    console.log(ctx);
     gctx = ctx;
 
     masterGain = ctx.createGain();
@@ -482,6 +480,8 @@ function Ding(ctx, freq, r, detune) {
 
 function Plink(ctx, freq, r, detune) {
     this.sr = ctx.sampleRate;
+
+    console.log(ctx);
 
     var osc1 = ctx.createOscillator();
     var osc2 = ctx.createOscillator();
@@ -821,11 +821,3 @@ function update_epm(epm, footer) {
 var tag_area = {},
     tag_text = false,
     tag_box = false;
-
-function getChromeVersion () {
-    // From https://stackoverflow.com/questions/4900436/how-to-detect-the-installed-chrome-version
-    // Thanks, Dan.
-    var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-
-    return raw ? parseInt(raw[2], 10) : false;
-}

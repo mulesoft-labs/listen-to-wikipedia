@@ -111,18 +111,15 @@
 
   $(function(){
 
-    // Chrome 66 Autoplay Policy Compliance
-    if (getChromeVersion() >= 66){
-      if (Howler.ctx.state == 'suspended') {
-        $('.js-main').prepend('<button class="btn unmute" type="button"><span data-text="Start Listening">Start Listening</span></button>');
-      }
-      $(document).click(function() {
-        if (Howler.ctx.state == 'suspended') {
-          Howler.ctx.resume().then($('.unmute').fadeOut(150));
-          reverbjs.extend(Howler.ctx);
-          // gctx = Howler.ctx;
-          initAudio(Howler.ctx);
-        }
+    Howler.ctx.suspend();
+
+    if (Howler.ctx.state === 'suspended') {
+      $('.js-main').prepend('<button class="btn unmute" type="button"><span data-text="Start Listening">Start Listening</span></button>');
+
+      $('.unmute').click(() => {
+        Howler.ctx.resume().then($('.unmute').fadeOut(150));
+        reverbjs.extend(Howler.ctx);
+        initAudio(Howler.ctx);
       });
     }
 
@@ -141,19 +138,22 @@
 
     const testButton = document.querySelector('.test-button');
     testButton.addEventListener('click', () => {
+      let latency = Math.random() * 500; // between 0–500
+
       fakeMessage = {
         codes: {
           '200': {
-            count: 40
+            count: Math.random() * 300
           },
           '429': {
-            count: 29
+            count: Math.random() * 100
           },
           '500': {
-            count: 1
+            count: Math.random() * 50
           }
         },
-        latency: 100
+        latency: latency,
+        alarm: latency >= 350 ? 'on' : 'off'
       };
       handle_message(fakeMessage);
     });
@@ -300,11 +300,6 @@
 </svg>
 
 <main class="main js-main">
-  <!--
-    oscillator classes (10s by default):
-    - .oscillator-2x (5s)
-    - .oscillator-max (.667s)
-   -->
   <section class="oscillator js-oscillator">
     <div class="view funk js-view"></div>
   </section>

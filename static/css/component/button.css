@@ -31,6 +31,6 @@
 }
 
 .btn:focus {
-  box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--orange);
+  box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--teal), 0 0 30px var(--teal);
   outline: 0;
 }

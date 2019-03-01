@@ -14,9 +14,6 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-circle {
-    fill-opacity: .5;
-}
 h1 {
     padding: 0.2em 0 0.2em 0.5em;
     margin: 0;

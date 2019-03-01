@@ -256,7 +256,7 @@ function Ding(ctx, freq) {
 
     vca.gain.value = 0;
 
-    gain.gain.value = 0.8;
+    gain.gain.value = 1;
 
 
     osc1.connect(filter);

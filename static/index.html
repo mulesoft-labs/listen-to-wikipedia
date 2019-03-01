@@ -218,16 +218,19 @@
 
     const testButton = document.querySelector('.test-button');
     testButton.addEventListener('click', () => {
-      var status = 400;
-      if (Math.random() > 0.8) {
-        status = 500;
-      }
-      var fakeMessage = {
-        "page_title": "Test_Title",
-        "url": "http://www.google.com",
-        "change_size": Math.floor(Math.random() * 50),
-        "status": status
+      fakeMessage = {
+        '200': {
+          count: 30
+        },
+        '4xx': {
+          count: 29
+        },
+        '5xx': {
+          count: 1
+        },
+        latency: 200
       };
+
       handle_message(fakeMessage);
     });
 

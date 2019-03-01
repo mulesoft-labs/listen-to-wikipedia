@@ -1,4 +1,5 @@
 function wp_action(data, svg_area, silent) {
+    console.log('wp_action');
     var silent = silent || false;
     if (!silent) {
         total_edits += 1;
@@ -218,20 +219,45 @@ function handle_message(msg) {
     }
 
     console.log(msg);
-
-    msg.change_size = 1;
-    msg.page_title = 'title + ' + Date.now();
-    msg.url = 'dd';
-
-    wp_action(msg, svg_area);
-
-    if (msg.status == 400) {
-        var ding = new Ding(gctx, calculate_frequency(0, 3), 0.3);
+    for (var i = 0; i < Math.min(msg['4xx'].count, 10); i++) {
+      emit4xx(i, msg);
     }
-    else if (msg.status == 500) {
-        var ding = new Ding(gctx, calculate_frequency(0, 4), 1);
+    for (var i = 0; i < Math.min(msg['5xx'].count, 10); i++) {
+      emit5xx(i, msg);
     }
+}
 
+function emit4xx(i, msg) {
+  var delay = Math.random() * 5;
+  var page_title = i + '4xx' + msg['4xx'].count;
+  var url =  "http://www.google.com";
+  var change_size = msg['4xx'].count;
+  setTimeout(() => {
+    console.log(i);
+    var ding = new Ding(gctx, calculate_frequency(0, 3), 0.3);
+    wp_action({
+      page_title: page_title,
+      url: url,
+      change_size: change_size,
+      status: 400
+    }, svg_area);
+  }, Math.random() * 5000);
+}
+
+function emit5xx(i, msg) {
+  var delay = Math.random() * 5;
+  var page_title = i + '5xx' + msg['4xx'].count;
+  var url =  "http://www.google.com";
+  var change_size = msg['5xx'].count;
+  setTimeout(() => {
+    console.log(i);
+    var ding = new Ding(gctx, calculate_frequency(0, 4), 1);
+    wp_action({
+      page_title: page_title,
+      url: url,
+      change_size: change_size
+    }, svg_area);
+  }, Math.random() * 5000);
 }
 
 

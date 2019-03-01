@@ -1,5 +1,4 @@
 .main {
-  background: linear-gradient(#291638, #0e0813);
   color: var(--white);
   height: 100vh;
   overflow: hidden;
@@ -24,7 +23,36 @@
 }
 
 .view {
+  background: linear-gradient(#291638, #0e0813);
   filter: blur(.5px);
+}
+
+.view.funk {
+  animation: funk 15s infinite;
+}
+
+@keyframes funk {
+  0% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  .67%,
+  40% {
+    filter: blur(.5px);
+  }
+  40.1% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  40.77%,
+  60% {
+    filter: blur(.5px);
+  }
+  60.1% {
+    filter: blur(5px) invert(100%) saturate(10);
+  }
+  60.77%,
+  100% {
+    filter: blur(.5px);
+  }
 }
 
 .view,
@@ -68,6 +96,20 @@
 .btn.unmute:active,
 .btn.unmute:focus {
   box-shadow: 0 0 0 3px var(--purple-dark), 0 0 0 6px var(--teal), 0 0 30px var(--teal);
+}
+
+/* circle label */
+.article-label {
+  font-size: 11px;
+  text-shadow:
+    1px 1px 0 var(--purple-dark),
+    -1px -1px 0 var(--purple-dark),
+    1px -1px 0 var(--purple-dark),
+    -1px 1px 0 var(--purple-dark),
+    0px 1px 0 var(--purple-dark),
+    1px 0px 0 var(--purple-dark),
+    0px -1px 0 var(--purple-dark),
+    -1px 0px 0 var(--purple-dark);
 }
 
 /* edits per minute */

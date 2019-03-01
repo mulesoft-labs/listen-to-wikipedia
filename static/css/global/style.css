@@ -86,17 +86,6 @@ label {
     border-radius: 3px;
     margin: 1em;
 }
-.article-label {
-    font: 1.0em sans-serif;
-    text-shadow:1px 1px 0 rgb(28, 39, 51),
-    -1px -1px 0 rgb(28, 39, 51),
-    1px -1px 0 rgb(28, 39, 51),
-    -1px 1px 0 rgb(28, 39, 51),
-    0px 1px 0 rgb(28, 39, 51),
-    1px 0px 0 rgb(28, 39, 51),
-    0px -1px 0 rgb(28, 39, 51),
-    -1px 0px 0 rgb(28, 39, 51);
-    }
 .lang {
     color: #bdc3c7;
     padding: auto .5em;

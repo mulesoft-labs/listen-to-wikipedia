@@ -187,6 +187,7 @@ function ackMessage(msg) {
 }
 
 let view;
+let oscillator;
 let statusText;
 let thresholdText = document.createElement('svg');
 thresholdText.classList.add('svg-error');
@@ -194,7 +195,8 @@ thresholdText.innerHTML = '<text class="error" text-anchor="middle">LATENCY THRE
 
 initMessages = function(svg) {
     view = document.querySelector('.js-view');
-    statusText = document.querySelector('.js-center')
+    oscillator = document.querySelector('.js-oscillator');
+    statusText = document.querySelector('.js-center');
     svg_area = svg;
 }
 
@@ -243,6 +245,19 @@ function handle_message(msg) {
     var l2 = Math.min((msg.latency / 500) * 100, 100);
     console.log('drone:', l, l2);
     drone.updateSettings(l, l2);
+
+    // drone animation
+    let oscillateRate = l + l2;
+    if (oscillateRate <= 67) {
+      oscillator.classList.remove('oscillator-2x');
+      oscillator.classList.remove('oscillator-max');
+    } else if (oscillateRate > 67 && oscillateRate < 133) {
+      oscillator.classList.remove('oscillator-max');
+      oscillator.classList.add('oscillator-2x');
+    } else if (oscillateRate >= 134) {
+      oscillator.classList.remove('oscillator-2x');
+      oscillator.classList.add('oscillator-max');
+    }
 }
 
 function emit4xx(i, msg) {

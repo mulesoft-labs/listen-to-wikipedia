@@ -1,3 +1,4 @@
+/* css glitch */
 [data-text] {
   position: relative;
 }
@@ -42,5 +43,126 @@
   }
   100% {
     clip: rect(53px, 450px, 5px, 0);
+  }
+}
+
+/* svg glitch */
+.top-r,
+.bot-r,
+.top-g,
+.bot-g {
+  stroke: #fff;
+}
+
+.top-r {
+  animation: topani 3.5s linear infinite;
+  stroke-width: 100px;
+}
+
+.bot-r {
+  animation: botani 4s linear infinite;
+  stroke-width: 100px;
+}
+
+.top-g {
+  animation: topani 4s linear reverse infinite;
+  stroke-width: 50px;
+}
+
+.bot-g {
+  animation: botani 3.5s linear reverse infinite;
+  stroke-width: 50%;
+}
+
+@keyframes topani {
+  6% {
+    stroke-width: 33px;
+  }
+  9% {
+    stroke-width: 198px;
+  }
+  20% {
+    stroke-width: 85px;
+  }
+  25% {
+    stroke-width: 54px;
+  }
+  31% {
+    stroke-width: 58px;
+  }
+  40% {
+    stroke-width: 110px;
+  }
+  46% {
+    stroke-width: 3px;
+  }
+  53% {
+    stroke-width: 88px;
+  }
+  56% {
+    stroke-width: 81px;
+  }
+  66% {
+    stroke-width: 71px;
+  }
+  72% {
+    stroke-width: 41px;
+  }
+  81% {
+    stroke-width: 48px;
+  }
+  86% {
+    stroke-width: 117px;
+  }
+  96% {
+    stroke-width: 148px;
+  }
+  100% {
+    stroke-width: 70px;
+  }
+}
+
+@keyframes botani {
+  3% {
+    stroke-width: 135px;
+  }
+  13% {
+    stroke-width: 18px;
+  }
+  20% {
+    stroke-width: 122px;
+  }
+  24% {
+    stroke-width: 137px;
+  }
+  30% {
+    stroke-width: 19px;
+  }
+  38% {
+    stroke-width: 196px;
+  }
+  47% {
+    stroke-width: 94px;
+  }
+  53% {
+    stroke-width: 162px;
+  }
+  58% {
+    stroke-width: 198px;
+  }
+  68% {
+    stroke-width: 165px;
+  }
+  74% {
+    stroke-width: 70px;
+  }
+  83% {
+    stroke-width: 128px;
+  }
+  84% {
+    stroke-width: 131px;
+  }
+  91% {
+    stroke-width: 51px;
   }
 }

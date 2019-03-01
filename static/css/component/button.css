@@ -33,3 +33,24 @@
   box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--teal), 0 0 30px var(--teal);
   outline: 0;
 }
+
+/* loading button */
+.btn.loading {
+  border-radius: 50px;
+  bottom: 0;
+  cursor: wait;
+  display: table;
+  filter: blur(.5px);
+  font-family: var(--vcr);
+  font-size: 30px;
+  height: 100px;
+  left: 0;
+  line-height: 100px;
+  margin: auto;
+  position: fixed;
+  right: 0;
+  text-shadow: 1px 0 var(--red);
+  top: 0;
+  width: 400px;
+  z-index: 10;
+}

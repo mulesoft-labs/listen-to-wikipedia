@@ -27,8 +27,56 @@
   filter: blur(.5px);
 }
 
-.view.funk {
-  animation: funk 15s infinite;
+.oscillator {
+  animation: oscillator-1x 10s infinite;
+}
+
+.oscillator-2x {
+  animation: oscillator-2x 5s infinite;
+}
+
+.oscillator-max {
+  animation: oscillator-4x .667s infinite;
+}
+
+.funk.funky {
+  animation: funk 10s infinite;
+}
+
+@keyframes oscillator-1x {
+  0% {
+    filter: blur(1px) brightness(1);
+  }
+  50% {
+    filter: blur(1px) brightness(1.5);
+  }
+  100% {
+    filter: blur(1px) brightness(1);
+  }
+}
+
+@keyframes oscillator-2x {
+  0% {
+    filter: blur(1px) brightness(1);
+  }
+  50% {
+    filter: blur(1px) brightness(1.5);
+  }
+  100% {
+    filter: blur(1px) brightness(1);
+  }
+}
+
+@keyframes oscillator-max {
+  0% {
+    filter: blur(1px) brightness(1);
+  }
+  50% {
+    filter: blur(1px) brightness(2);
+  }
+  100% {
+    filter: blur(1px) brightness(1);
+  }
 }
 
 @keyframes funk {
@@ -37,24 +85,25 @@
   }
   .67%,
   40% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
   40.1% {
     filter: blur(5px) invert(100%) saturate(10);
   }
   40.77%,
   60% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
   60.1% {
     filter: blur(5px) invert(100%) saturate(10);
   }
   60.77%,
   100% {
-    filter: blur(.5px);
+    filter: blur(1px);
   }
 }
 
+.oscillator,
 .view,
 .view svg {
   height: 100%;
@@ -100,7 +149,11 @@
 
 /* circle label */
 .article-label {
-  font-size: 11px;
+  font-family: var(--vcr);
+  font-size: 30px;
+  font-weight: var(--weight-bold);
+  filter: url(#glitch);
+  transform: translateY(50px);
   text-shadow:
     1px 1px 0 var(--purple-dark),
     -1px -1px 0 var(--purple-dark),

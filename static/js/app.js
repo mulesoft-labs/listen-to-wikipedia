@@ -64,21 +64,24 @@ function wp_action(data, svg_area, silent) {
                 stroke: 'none'})
          .transition()
          .attr('r', size + 40)
+         .attr('fill', 'url(#ring)')
          .style('opacity', 0)
          .ease(Math.sqrt)
-         .duration(2500)
+         .duration(11000) // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
          .remove();
 
     var circle_container = circle_group.append('a')
-        .attr('xlink:href', data.url)
-        .attr('target', '_blank')
-        .attr('fill', svg_text_color);
+        .attr('fill', '#85dfc4');
+        // .attr('xlink:href', data.url)
+        // .attr('target', '_blank')
 
     var circle = circle_container.append('circle')
         .classed(type, true)
+        .attr('fill', '#85dfc4')
+        .style('filter', 'url(#glow) opacity(50%)')
         .attr('r', size)
         .transition()
-        .duration(max_life)
+        .duration(max_life) // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
         .style('opacity', 0)
         .each('end', function() {
             circle_group.remove();
@@ -141,8 +144,8 @@ function getAuthToken() {
 }
 
 function getMessage() {
-  var uri = 'https://mq-us-east-1.anypoint.mulesoft.com/api/v1/organizations/f425e3c1-4229-4e46-b6fe-495ab4b65de0/environments/16342834-9571-4fc1-9ac9-8a144f432644/destinations/audio-monitoring-queue/messages?batchSize=1&poolingTime=0';  
-  
+  var uri = 'https://mq-us-east-1.anypoint.mulesoft.com/api/v1/organizations/f425e3c1-4229-4e46-b6fe-495ab4b65de0/environments/16342834-9571-4fc1-9ac9-8a144f432644/destinations/audio-monitoring-queue/messages?batchSize=1&poolingTime=0';
+
   return fetch(uri, {
     headers: {
       'Authorization': 'bearer ' + authToken,
@@ -161,7 +164,7 @@ function getMessage() {
     }
     return res.json();
   })
-  .then(function (res) {    
+  .then(function (res) {
     if (res.length > 0) {
       return JSON.parse(res[0].body);
     } else {

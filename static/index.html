@@ -67,7 +67,7 @@
       note_overlap = 15,
       note_timeout = 300,
       current_notes = 0,
-      max_life = 60000,
+      max_life = 10000, // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
       DEFAULT_LANG = 'en';
 
   /* Colors
@@ -161,7 +161,7 @@
     // Chrome 66 Autoplay Policy Compliance
     if (getChromeVersion() >= 66){
       if (Howler.ctx.state == 'suspended') {
-        $('.js-view').prepend('<a class="btn md unmute">Enable Sound</a>');
+        $('.js-view').prepend('<button class="btn md unmute" type="button">Enable Sound</button>');
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut(150));
@@ -183,6 +183,28 @@
 
     var svg = d3.select('.js-view').append('svg');
 
+    // add svg filter
+    const defs = svg.append('defs');
+    const filter = defs.append('filter').attr('id','glow');
+    const feMerge = filter.append('feMerge');
+
+    filter.append('feGaussianBlur').attr('stdDeviation','1.5').attr('result','coloredBlur');
+    feMerge.append('feMergeNode').attr('in','coloredBlur');
+    feMerge.append('feMergeNode').attr('in','SourceGraphic');
+    // end svg filter
+
+    // add svg gradient
+    const gradient = defs.append('radialGradient');
+    const stop1 = gradient.append('stop');
+    const stop2 = gradient.append('stop');
+
+    gradient.attr('id', 'ring');
+    stop1.attr('offset', '0');
+    stop1.attr('stop-color', 'rgba(133,223,196,1)'); // teal
+    stop2.attr('offset', '100%');
+    stop2.attr('stop-color', 'rgba(27,15,36,0)'); // purple-dark
+    // end svg gradient
+
     $('#background_mode').click(
       function() {$('.js-view svg').toggle();}
     );
@@ -195,7 +217,7 @@
       fakeMessage = {
         "page_title": "Test_Title",
         "url": "http://www.google.com",
-        "change_size": Math.floor(Math.random() * 10)
+        "change_size": Math.floor(Math.random() * 50)
       };
       handle_message(fakeMessage);
     });

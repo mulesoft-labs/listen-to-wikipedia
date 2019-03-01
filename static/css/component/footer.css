@@ -6,6 +6,23 @@
   padding: 0 var(--lg);
   position: absolute;
   right: 0;
+  text-shadow: 0 0 9px rgba(255,255,255,.5);
+}
+
+.status {
+  font-family: var(--vcr);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+}
+
+.red {
+  color: var(--red);
+  text-shadow: 0 0 9px rgba(242,80,88,.5);
+}
+
+.status::before,
+.status::after {
+  text-align: center;
 }
 
 @media (max-width: 750px) {
@@ -15,7 +32,7 @@
     padding: var(--md);
   }
 
-  .js-center {
+  .status {
     margin-bottom: var(--sm);
     margin-top: var(--sm);
   }

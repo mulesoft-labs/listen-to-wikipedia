@@ -159,7 +159,7 @@
     // Chrome 66 Autoplay Policy Compliance
     if (getChromeVersion() >= 66){
       if (Howler.ctx.state == 'suspended') {
-        $('.js-view').prepend('<button class="btn md unmute" type="button">Enable Sound</button>');
+        $('.js-view').prepend('<button class="btn unmute" type="button"><span data-text="Enable Sound">Enable Sound</span></button>');
       }
       $(document).click(function() {
         Howler.ctx.resume().then($('.unmute').fadeOut(150));

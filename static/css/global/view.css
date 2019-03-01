@@ -7,6 +7,21 @@
   width: 100vw;
 }
 
+.view::before {
+  background: url(../../img/scanlines.svg);
+  bottom: 0;
+  content: "";
+  height: 100vh;
+  left: 0;
+  opacity: .05;
+  position: fixed;
+  pointer-events: none;
+  right: 0;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
 .view svg {
   background: var(--purple-dark);
   height: 100%;
@@ -24,16 +39,26 @@
 }
 
 /* enable sound button */
-.unmute {
+.btn.unmute {
+  border-radius: 60px;
   bottom: 0;
   display: table;
+  font-size: 50px;
+  height: 120px;
+  line-height: 120px;
   left: 0;
   margin: auto;
   position: absolute;
   right: 0;
   top: 0;
-  width: 200px;
+  width: 450px;
   z-index: 10;
+}
+
+.btn.unmute:hover,
+.btn.unmute:active,
+.btn.unmute:focus {
+  box-shadow: 0 0 0 3px var(--purple-dark), 0 0 0 6px var(--teal), 0 0 30px var(--teal);
 }
 
 /* edits per minute */

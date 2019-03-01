@@ -1,0 +1,46 @@
+[data-text] {
+  position: relative;
+}
+
+[data-text]::before,
+[data-text]::after {
+  content: attr(data-text);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+[data-text]::before {
+  animation: glitch 1s infinite linear alternate-reverse;
+  clip: rect(44px, 450px, 56px, 0);
+  left: 2px;
+  text-shadow: -1px 0 var(--orange);
+}
+
+[data-text]::after {
+  animation: glitch 1s .1s infinite linear alternate-reverse;
+  left: -2px;
+  text-shadow: -1px 0 var(--blue);
+}
+
+@keyframes glitch {
+  0% {
+    clip: rect(70px, 450px, 76px, 0);
+  }
+  20% {
+    clip: rect(29px, 450px, 16px, 0);
+  }
+  40% {
+    clip: rect(76px, 450px, 3px, 0);
+  }
+  60% {
+    clip: rect(42px, 450px, 78px, 0);
+  }
+  80% {
+    clip: rect(15px, 450px, 13px, 0);
+  }
+  100% {
+    clip: rect(53px, 450px, 5px, 0);
+  }
+}

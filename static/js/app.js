@@ -67,7 +67,7 @@ function wp_action(data, svg_area, silent) {
          .attr('fill', 'url(#ring)')
          .style('opacity', 0)
          .ease(Math.sqrt)
-         .duration(11000)
+         .duration(11000) // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
          .remove();
 
     var circle_container = circle_group.append('a')
@@ -81,7 +81,7 @@ function wp_action(data, svg_area, silent) {
         .style('filter', 'url(#glow) opacity(50%)')
         .attr('r', size)
         .transition()
-        .duration(max_life)
+        .duration(max_life) // NOTE: this transition has been overriden in view.css, so if you want to change the duration—do it there.
         .style('opacity', 0)
         .each('end', function() {
             circle_group.remove();

@@ -42,3 +42,28 @@
   right: 0;
   position: absolute;
 }
+
+/* transition */
+circle {
+  /* max_life + 1s */
+  animation: fade-in 11s var(--trans-time) forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(.8);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(.9);
+  }
+}

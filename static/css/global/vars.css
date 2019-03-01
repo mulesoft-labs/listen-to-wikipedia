@@ -32,4 +32,7 @@
   --radius-sm: 3px;
   --radius-md: 8px;
   --input-border: 1px;
+
+  /* transitions */
+  --trans-time: cubic-bezier(.02,.35,.69,1.02);
 }

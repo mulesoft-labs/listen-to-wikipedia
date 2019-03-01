@@ -146,14 +146,14 @@ function getMessage() {
   })
   .then(function(res) {
     if (res.status == 204) {
-        return [];
+    return [];
     }
     else if (res.status == 401) {
       getAuthToken();
       return null;
     }
     else if (!res.ok) {
-        throw new Error('Network response was not ok.');
+    throw new Error('Network response was not ok.');
     }
     return res.json();
   })
@@ -186,7 +186,15 @@ function ackMessage(msg) {
   });
 }
 
+let view;
+let statusText;
+let thresholdText = document.createElement('svg');
+thresholdText.classList.add('svg-error');
+thresholdText.innerHTML = '<text class="error" text-anchor="middle">LATENCY THRESHOLD EXCEEDED</text>';
+
 initMessages = function(svg) {
+    view = document.querySelector('.js-view');
+    statusText = document.querySelector('.js-center')
     svg_area = svg;
 }
 
@@ -198,7 +206,7 @@ pollMessages = function() {
       .then(function() {
         if (should_connect) {
             // console.log('Polling');
-            setTimeout(pollMessages, 2000);
+            setTimeout(pollMessages, 500);
         }
       });
 }
@@ -208,11 +216,20 @@ function handle_message(msg) {
         return;
     }
 
-    if (msg.alarm == 'on') {
+    if (msg.latency == 0) {
+      msg.alarm = 'off';
+    }
+
+    if (msg.alarm === 'on') {
       handle_alarm_on();
     }
-    else if (msg.alarm == 'off') {
+    else if (msg.alarm === 'off') {
       handle_alarm_off();
+    }
+
+    var totalRequests = 0;
+    for (var key in msg.codes) {
+      totalRequests += msg.codes[key].count;
     }
 
     console.log(msg);
@@ -226,6 +243,10 @@ function handle_message(msg) {
         emit5xx(i, msg);
       }
     }
+    var l = Math.min((totalRequests / 300) * 100, 100);
+    var l2 = Math.min((msg.latency / 500) * 100, 100);
+    console.log('drone:', l, l2);
+    drone.updateSettings(l, l2);
 }
 
 function emit4xx(i, msg) {
@@ -245,7 +266,7 @@ function emit4xx(i, msg) {
 }
 
 function emit5xx(i, msg) {
-  var url =  "http://www.google.com";
+  var url = "http://www.google.com";
   var change_size = 1 + Math.random() * 40;
   setTimeout(() => {
     console.log(i);
@@ -259,9 +280,13 @@ function emit5xx(i, msg) {
 }
 
 var alarmIsOn = false;
+
 function handle_alarm_on(msg) {
   if (!alarmIsOn) {
     alarmIsOn = true;
+    static = new Static(gctx);
+    view.classList.add('funky');
+    view.appendChild(thresholdText);
     console.log("ALARM ON");
   }
 }
@@ -269,6 +294,8 @@ function handle_alarm_on(msg) {
 function handle_alarm_off() {
   if (alarmIsOn) {
     alarmIsOn = false;
+    view.classList.remove('funky');
+    view.removeChild(thresholdText);
     console.log("ALARM OFF");
   }
 }
@@ -765,16 +792,13 @@ function newuser_action(data, lid, svg_area) {
 }
 
 let epm_text = false;
-let epm_el = document.createElement('div');
 
 function update_epm(epm, footer) {
     if (!epm_text) {
-        epm_el.classList.add('counter');
-        document.querySelector('.js-center').appendChild(epm_el);
         epm_text = true;
-    } else {
-        let epm_copy = `${epm} requests/minute`;
-        epm_el.innerHTML = epm_copy;
+    } else if (!alarmIsOn) {
+        let epm_copy = `${epm} messages/minute`;
+        statusText.innerHTML = epm_copy;
     }
 }
 

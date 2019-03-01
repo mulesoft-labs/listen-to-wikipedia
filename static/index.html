@@ -91,7 +91,7 @@
       d = document,
       e = d.documentElement,
       g = d.getElementsByTagName('.js-view svg')[0],
-      width = w.innerWidth || e.clientWidth || g.clientWidth;
+      width = w.innerWidth || e.clientWidth || g.clientWidth,
       height = w.innerHeight|| e.clientHeight || g.clientHeight;
 
   var celesta = [],
@@ -144,7 +144,7 @@
       fakeMessage = {
         codes: {
           '200': {
-            count: 30
+            count: 40
           },
           '429': {
             count: 29
@@ -155,7 +155,6 @@
         },
         latency: 200
       };
-
       handle_message(fakeMessage);
     });
 
@@ -307,12 +306,7 @@
     - .oscillator-max (.667s)
    -->
   <section class="oscillator">
-    <!--
-      funk classes (off by default):
-      - .funky (on)
-     -->
-    <div class="view funk js-view">
-    </div>
+    <div class="view funk js-view"></div>
   </section>
   <footer class="flex align-center justify-justified footer js-footer">
     <div class="flex justify-left js-left about-link">
@@ -320,7 +314,7 @@
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
     </div>
-    <div class="flex justify-center js-center"></div>
+    <div class="flex justify-center status js-center"></div>
     <div class="flex justify-right js-right">
       <button class="btn sm test-button" type="button">Ping</button>
       <label class="flex shrink align-center toggle">MQ Data

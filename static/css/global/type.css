@@ -2,3 +2,8 @@
   font-family: 'VCR';
   src: url('../../fonts/vcr.ttf') format('truetype');
 }
+
+.vcr {
+  font-family: var(--vcr);
+  font-weight: var(--weight-bold);
+}

@@ -234,7 +234,7 @@ function emit4xx(i, msg) {
   var change_size = 1 + Math.random() * 20;
   setTimeout(() => {
     console.log(i);
-    var ding = new Ding(gctx, calculate_frequency(0, 3), 0.1);
+    var plink = new Plink(gctx, calculate_frequency(7, 3), 0.25, 5);
     wp_action({
       page_title: '429',
       url: url,
@@ -249,7 +249,7 @@ function emit5xx(i, msg) {
   var change_size = 1 + Math.random() * 40;
   setTimeout(() => {
     console.log(i);
-    var ding = new Ding(gctx, calculate_frequency(0, 4), 2);
+    var ding = new Ding(gctx, calculate_frequency(0, 4), 0.6, 10);
     wp_action({
       page_title: '500',
       url: url,
@@ -286,7 +286,7 @@ var static = {};
 var bufferSize = 4096;
 
 //Ding default ADSR
-var dingAttack = 0.01;
+var dingAttack = 0.02;
 var dingDecay = 0.1;
 var dingSustain = 1;
 var dingRelease = 0.4;
@@ -395,7 +395,7 @@ Static.prototype.pause = function() {
 // })();
 
 
-function Ding(ctx, freq, r) {
+function Ding(ctx, freq, r, detune) {
     this.sr = ctx.sampleRate;
 
     var osc1 = ctx.createOscillator();
@@ -404,15 +404,16 @@ function Ding(ctx, freq, r) {
     var gain = ctx.createGain();
     var filter = ctx.createBiquadFilter();
 
-    filter.frequency.setValueAtTime(calculate_frequency(0), ctx.currentTime);
-    filter.Q.setValueAtTime(8, ctx.currentTime);
+    filter.frequency.setValueAtTime(calculate_frequency(12), ctx.currentTime);
+    filter.Q.setValueAtTime(10, ctx.currentTime);
     filter.type = 'lowpass';
 
     osc1.type = 'sawtooth';
     osc1.frequency.value = freq;
 
     osc2.type = 'triangle';
-    osc2.frequency.value = calculate_frequency(0);
+    osc2.frequency.value = freq;
+    osc2.detune.value = detune;
 
     vca.gain.value = 0;
 
@@ -423,7 +424,51 @@ function Ding(ctx, freq, r) {
     osc2.connect(filter);
 
     filter.connect(vca);
-    filter.Q.value = 10;
+    filter.Q.value = 8;
+
+    vca.connect(gain);
+
+    gain.connect(reverbNode);
+
+    osc1.start();
+    osc2.start();
+    console.log("Created Ding");
+    envGenSustainPluck(vca.gain, 1, 0, dingAttack, 0.2, r);
+    envGenSustainPluck(filter.frequency, 1800, 100, dingAttack, 0, r);
+}
+
+function Plink(ctx, freq, r, detune) {
+    this.sr = ctx.sampleRate;
+
+    var osc1 = ctx.createOscillator();
+    var osc2 = ctx.createOscillator();
+    var vca  = ctx.createGain();
+    var gain = ctx.createGain();
+    var filter = ctx.createBiquadFilter();
+
+    filter.frequency.setValueAtTime(calculate_frequency(-12), ctx.currentTime);
+    filter.Q.setValueAtTime(8, ctx.currentTime);
+    filter.type = 'lowpass';
+
+    var freqFuzz = Math.random()*0;
+
+    osc1.type = 'triangle';
+    osc1.frequency.value = freq + freqFuzz;
+
+    osc2.type = 'square';
+    osc2.frequency.value = (freq) + freqFuzz;
+    osc2.detune.value = detune;
+
+    vca.gain.value = 0;
+
+    gain.gain.value = 1;
+
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+
+    filter.connect(vca);
+    filter.Q.value = 3;
 
     vca.connect(gain);
 
@@ -433,7 +478,7 @@ function Ding(ctx, freq, r) {
     osc2.start();
     console.log("Created Ding");
     envGenPluck(vca.gain, 1, 0, dingAttack, r);
-    envGenPluck(filter.frequency, 1800, 100, dingAttack, dingRelease);
+    envGenPluck(filter.frequency, 1800, 100, dingAttack, r);
 }
 
 // For request events
@@ -599,6 +644,17 @@ function envGenPluck(vcaGain, upper, lower, a, r) {
     vcaGain.setValueAtTime(0, now);
     vcaGain.linearRampToValueAtTime(upper, now + a);
     vcaGain.linearRampToValueAtTime(lower, now + a + r);
+}
+
+function envGenSustainPluck(vcaGain, upper, lower, a, s, r) {
+    var now = gctx.currentTime;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueAtTime(0, now);
+    vcaGain.linearRampToValueAtTime(upper, now + a);
+
+    setTimeout(() => {
+        vcaGain.linearRampToValueAtTime(lower, now + a + r);
+    }, s*1000);
 }
 
 function envGenOn(vcaGain, a, d, s) {

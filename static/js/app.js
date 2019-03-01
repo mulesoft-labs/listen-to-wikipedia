@@ -708,22 +708,17 @@ function newuser_action(data, lid, svg_area) {
 
 }
 
-var epm_text = false;
-var epm_container = {};
+let epm_text = false;
+let epm_el = document.createElement('div');
 
-function update_epm(epm, svg_area) {
+function update_epm(epm, footer) {
     if (!epm_text) {
-        epm_container = svg_area.append('g')
-            .attr('transform', 'translate(0, ' + (height - 25) + ')')
-
-        epm_text = epm_container.append('text')
-            .classed('newuser-label', true)
-            .attr('transform', 'translate(5, 18)')
-            .style('font-size', '.8em')
-            .text(epm + ' edits per minute');
-
-    } else if (epm_text.text) {
-        epm_text.text(epm + ' edits per minute');
+        epm_el.classList.add('counter');
+        document.querySelector('.js-center').appendChild(epm_el);
+        epm_text = true;
+    } else {
+        let epm_copy = `${epm} requests/minute`;
+        epm_el.innerHTML = epm_copy;
     }
 }
 

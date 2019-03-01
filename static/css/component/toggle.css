@@ -11,7 +11,7 @@
 
 .toggle-input {
   transition: background .15s var(--trans-time);
-  background: var(--black);
+  background: #251047;
   border-radius: var(--md);
   cursor: pointer;
   height: var(--md);

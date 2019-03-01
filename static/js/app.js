@@ -236,7 +236,7 @@ var droneIsPlaying = false;
 var dingAttack = 0.001;
 var dingDecay = 0.1;
 var dingSustain = 1;
-var dingRelease = 0.2;
+var dingRelease = 0.4;
 
 function initAudio(ctx) {
     console.log("Initialized audio");

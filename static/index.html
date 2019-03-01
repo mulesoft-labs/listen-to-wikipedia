@@ -186,28 +186,6 @@
 
     var svg = d3.select('.js-view').append('svg');
 
-    // add svg filter
-    const defs = svg.append('defs');
-    const filter = defs.append('filter').attr('id','glow');
-    const feMerge = filter.append('feMerge');
-
-    filter.append('feGaussianBlur').attr('stdDeviation','5');
-    feMerge.append('feMergeNode').attr('in','coloredBlur');
-    feMerge.append('feMergeNode').attr('in','SourceGraphic');
-    // end svg filter
-
-    // add svg gradient
-    const gradient = defs.append('radialGradient');
-    const stop1 = gradient.append('stop');
-    const stop2 = gradient.append('stop');
-
-    gradient.attr('id', 'ring');
-    stop1.attr('offset', '0');
-    stop1.attr('stop-color', 'rgba(133,223,196,1)'); // teal
-    stop2.attr('offset', '100%');
-    stop2.attr('stop-color', 'rgba(27,15,36,0)'); // purple-dark
-    // end svg gradient
-
     $('#background_mode').click(
       function() {$('.js-view svg').toggle();}
     );
@@ -321,6 +299,69 @@
     });
   })
 </script>
+
+<!-- svg filters -->
+<svg class="svg-filters">
+  <defs>
+    <filter id="glow">
+      <feMerge>
+        <feMergeNode in="coloredBlur"></feMergeNode>
+        <feMergeNode in="SourceGraphic"></feMergeNode>
+      </feMerge>
+      <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+    </filter>
+    <radialGradient id="ring">
+      <stop offset="0" stop-color="rgba(133,223,196,1)"></stop>
+      <stop offset="100%" stop-color="rgba(27,15,36,0)"></stop>
+    </radialGradient>
+
+    <!-- glitch filters -->
+    <svg id="glitchmask-r" width="100%" height="100%" viewbox="0 0 100 100" preserveAspectRatio="none">
+      <line class="top-r" x1="0" y1="0" x2="100%" y2="0"> </line>
+      <line class="bot-r" x1="0" y1="100%" x2="100%" y2="100%"></line>
+    </svg>
+    <svg id="glitchmask-g" width="100%" height="100%" viewbox="0 0 100 100" preserveAspectRatio="none">
+        <line class="top-g" x1="0" y1="0" x2="100%" y2="0"></line>
+        <line class="bot-g" x1="0" y1="100%" x2="100%" y2="100%"></line>
+    </svg>
+
+    <filter color-interpolation-filters="sRGB" id="glitch" width="100%" heigth="100%" x="0" y="0">
+      <feFlood flood-color="black" result="black"></feFlood>
+
+      <!-- red text start -->
+      <feFlood flood-color="red" result="REDTXT_FLOOD_10"></feFlood>
+      <feComposite operator="in" in="REDTXT_FLOOD_10" in2="SourceAlpha" result="REDTXT_COMP_20"></feComposite>
+      <feOffset in="SourceGraphic" dx="-2" dy="0" result="REDTXT_OFFSET_30"></feOffset>
+      <feMerge result="REDTXT_MERGE_40">
+          <feMergeNode in="black"></feMergeNode>
+          <feMergeNode in="REDTXT_COMP_20"></feMergeNode>
+          <feMergeNode in="REDTXT_OFFSET_30"></feMergeNode>
+      </feMerge>
+      <feImage preserveAspectRatio="none" id="mask-r" result="REDTXT_IMG_50" xlink:href="#glitchmask-r"></feImage>
+      <feComposite in2="REDTXT_IMG_50" in="REDTXT_MERGE_40" operator="out" result="REDTXT_COMP_60"></feComposite>
+      <!-- red text end -->
+
+      <!-- green text start -->
+      <feFlood flood-color="limegreen" result="GREENTXT_FLOOD_10"></feFlood>
+      <feComposite operator="in" in="GREENTXT_FLOOD_10" in2="SourceAlpha" result="GREENTXT_COMP_20"></feComposite>
+      <feOffset in="SourceGraphic" dx="2" dy="0" result="GREENTXT_OFFSET_30"></feOffset>
+      <feMerge result="GREENTXT_MERGE_40">
+          <feMergeNode in="black"></feMergeNode>
+          <feMergeNode in="GREENTXT_COMP_20"></feMergeNode>
+          <feMergeNode in="GREENTXT_OFFSET_30"></feMergeNode>
+      </feMerge>
+      <feImage preserveAspectRatio="none" id="mask-g" result="GREENTXT_IMG_50" xlink:href="#glitchmask-g"></feImage>
+      <feComposite in2="GREENTXT_IMG_50" in="GREENTXT_MERGE_40" operator="out" result="GREENTXT_COMP_60"></feComposite>
+      <!-- green text end -->
+
+      <feMerge result="MERGE_10">
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+          <feMergeNode in="REDTXT_COMP_60"></feMergeNode>
+          <feMergeNode in="GREENTXT_COMP_60"></feMergeNode>
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
 
 <main class="main js-main">
   <section class="view js-view"></section>

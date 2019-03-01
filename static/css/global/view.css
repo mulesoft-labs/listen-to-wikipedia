@@ -70,6 +70,20 @@
   box-shadow: 0 0 0 3px var(--purple-dark), 0 0 0 6px var(--teal), 0 0 30px var(--teal);
 }
 
+/* circle label */
+.article-label {
+  font-size: 11px;
+  text-shadow:
+    1px 1px 0 var(--purple-dark),
+    -1px -1px 0 var(--purple-dark),
+    1px -1px 0 var(--purple-dark),
+    -1px 1px 0 var(--purple-dark),
+    0px 1px 0 var(--purple-dark),
+    1px 0px 0 var(--purple-dark),
+    0px -1px 0 var(--purple-dark),
+    -1px 0px 0 var(--purple-dark);
+}
+
 /* edits per minute */
 .newuser-label {
   bottom: 0;

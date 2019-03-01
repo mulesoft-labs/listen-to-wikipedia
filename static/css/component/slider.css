@@ -12,6 +12,8 @@
   transition: box-shadow .15s ease-in-out;
 }
 
+.noUiSlider div:hover,
+.noUiSlider div:focus,
 .noUiSlider div.active {
   box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--teal), 0 0 30px var(--teal);
 }

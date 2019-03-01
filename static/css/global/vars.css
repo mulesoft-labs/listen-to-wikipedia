@@ -1,6 +1,7 @@
 :root {
   /* fonts */
   --sans-serif: -apple-system,'BlinkMacSystemFont','Helvetica Neue','Segoe UI',sans-serif;
+  --vcr: 'VCR',-apple-system,'BlinkMacSystemFont','Helvetica Neue','Segoe UI',sans-serif;
   --weight-bold: 800;
   --weight-normal: 400;
 

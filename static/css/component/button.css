@@ -2,7 +2,7 @@
 .btn {
   background: var(--purple);
   border: 0;
-  border-radius: var(--lg);
+  box-shadow: 0 1px 15px rgba(132,20,242,.5);
   color: var(--white);
   cursor: pointer;
   font-weight: var(--weight-bold);
@@ -12,6 +12,7 @@
 }
 
 .btn.md {
+  border-radius: var(--lg);
   height: var(--lg);
   line-height: var(--lg);
   padding: 0 var(--md);
@@ -19,6 +20,7 @@
 
 .btn.sm {
   border-radius: var(--md);
+  box-shadow: 0 1px 10px rgba(132,20,242,.5);
   font-size: 13px;
   height: var(--md);
   line-height: var(--md);
@@ -26,10 +28,7 @@
 }
 
 .btn:hover,
-.btn:active {
-  background: #6312b3; /* slightly darker than var(--purple) */
-}
-
+.btn:active,
 .btn:focus {
   box-shadow: 0 0 0 2px var(--purple-dark), 0 0 0 4px var(--teal), 0 0 30px var(--teal);
   outline: 0;

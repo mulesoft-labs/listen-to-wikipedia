@@ -161,7 +161,7 @@
     // Chrome 66 Autoplay Policy Compliance
     if (getChromeVersion() >= 66){
       if (Howler.ctx.state == 'suspended') {
-        $('.js-view').prepend('<button class="btn md unmute" type="button">Enable Sound</button>');
+        $('.js-main').prepend('<button class="btn unmute" type="button"><span data-text="Start Listening">Start Listening</span></button>');
       }
       $(document).click(function() {
         if (Howler.ctx.state == 'suspended') {
@@ -191,7 +191,7 @@
     const filter = defs.append('filter').attr('id','glow');
     const feMerge = filter.append('feMerge');
 
-    filter.append('feGaussianBlur').attr('stdDeviation','1.5').attr('result','coloredBlur');
+    filter.append('feGaussianBlur').attr('stdDeviation','5');
     feMerge.append('feMergeNode').attr('in','coloredBlur');
     feMerge.append('feMergeNode').attr('in','SourceGraphic');
     // end svg filter
@@ -287,7 +287,7 @@
 
     function handleMQToggle() {
       isChecked = $('#connectToMQ').prop('checked');
-      console.log(isChecked);
+      console.log(`MQ checked: ${isChecked}`);
       if (isChecked == true) {
         //Should connect to MQ
         should_connect = true;
@@ -322,30 +322,33 @@
   })
 </script>
 
-<section class='view js-view'>
+<main class="main js-main">
+  <section class="view js-view"></section>
   <footer class="flex align-center justify-justified footer">
-    <span class="about-link">
+    <span class="flex about-link">
       <span id="volumeWrapper" class="interface">
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
     </span>
-    <div>
-      <button class="btn sm test-button" type="button">Test</button>
-      <input type="checkbox" name="connectToMQ" id="connectToMQ">
-      <label for='connectToMQ'>Connect to MQ</label>
+    <div class="flex shrink">
+      <button class="btn sm test-button" type="button">Ping</button>
+      <label class="flex shrink align-center toggle">MQ Data
+        <input type="checkbox" name="connectToMQ" id="connectToMQ">
+        <div class="toggle-input"></div>
+      </label>
     </div>
   </footer>
-</section>
+</main>
 
-<div id='content'>
-    <div class='bg'>
-        <div id='rc-log-c'>
+<div id="content">
+    <div class="bg">
+        <div id="rc-log-c">
             <h3>Recent changes</h3>
-            <ul id='rc-log'>
+            <ul id="rc-log">
             </ul>
              <div class="note">
               <p id="edit_counter"></p>
-              <p>For more, see Wikipedia's RecentChanges pages for <a href="http://www.wikipedia.org/">each language</a>.</p>
+              <p>For more, see Wikipedia’s RecentChanges pages for <a href="http://www.wikipedia.org/">each language</a>.</p>
             </div>
         </div>
     </div>
@@ -353,16 +356,16 @@
 <div class="foot">
     <h3>Settings</h3>
     <p><input type="checkbox" name="welcome" id="welcome">
-    <label for='welcome'>Hide new user announcements</label></p>
+    <label for="welcome">Hide new user announcements</label></p>
     <p><input type="checkbox" name="titles" id="titles">
-    <label for='titles'>Hide article titles</label></p>
+    <label for="titles">Hide article titles</label></p>
     <p><input type="checkbox" name="hide_rc_box" id="hide_rc_box">
     <label for="hide_rc_box">Hide recent changes console</label></p>
     <p><input type="checkbox" name="background_mode" id="background_mode">
     <label for="background_mode">Hide graphics for background listening</label></p>
     <h3>Languages</h3>
-    <div id='lang-boxes'> </div>
-    <div class='clear'><br/></div>
+    <div id="lang-boxes"> </div>
+    <div class="clear"><br/></div>
     <h3>Tags</h3>
     <p>Listen for edits with a hashtag in the edit summary. Try it yourself! To do this, enter a hashtag below, then go make an edit and the same tag in the <a href="https://en.wikipedia.org/wiki/Help:Edit_summary">edit summary</a> of your article. If you have tags here, you will only hear edits with those tags.</p>
     <p><input id="filter" type="text" value=""></p>

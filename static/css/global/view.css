@@ -1,39 +1,73 @@
-.view {
-  background: var(--purple-dark);
+.main {
+  background: linear-gradient(#291638, #0e0813);
   color: var(--white);
   height: 100vh;
   overflow: hidden;
   position: relative;
+  user-select: none;
   width: 100vw;
 }
 
+.main::before {
+  background: url(../../img/scanlines.svg);
+  bottom: 0;
+  content: "";
+  height: 100%;
+  left: 0;
+  opacity: .05;
+  position: absolute;
+  pointer-events: none;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.view {
+  filter: blur(.5px);
+}
+
+.view,
 .view svg {
-  background: var(--purple-dark);
   height: 100%;
   width: 100%;
 }
 
 .footer {
-  background: rgba(0,0,0,.3);
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.75));
   bottom: 0;
   height: var(--lg);
   left: 0;
-  padding: 0 var(--lg);
+  padding: 0 var(--md);
   position: absolute;
   right: 0;
 }
 
 /* enable sound button */
-.unmute {
+.btn.unmute {
+  border-radius: 50px;
   bottom: 0;
   display: table;
+  filter: blur(.5px);
+  font-family: var(--vcr);
+  font-size: 30px;
+  height: 100px;
   left: 0;
+  line-height: 100px;
   margin: auto;
+  opacity: .95;
   position: absolute;
   right: 0;
+  text-shadow: 1px 0 var(--red);
   top: 0;
-  width: 200px;
+  width: 400px;
   z-index: 10;
+}
+
+.btn.unmute:hover,
+.btn.unmute:active,
+.btn.unmute:focus {
+  box-shadow: 0 0 0 3px var(--purple-dark), 0 0 0 6px var(--teal), 0 0 30px var(--teal);
 }
 
 /* edits per minute */
@@ -41,6 +75,11 @@
   bottom: 0;
   right: 0;
   position: absolute;
+}
+
+/* test */
+.test-button {
+  margin-right: var(--sm);
 }
 
 /* transition */

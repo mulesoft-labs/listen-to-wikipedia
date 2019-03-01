@@ -224,37 +224,52 @@ function handle_message(msg) {
     msg.url = 'dd';
 
     wp_action(msg, svg_area);
+
+    if (msg.status == 400) {
+        var ding = new Ding(gctx, calculate_frequency(0, 3), 0.3);
+    }
+    else if (msg.status == 500) {
+        var ding = new Ding(gctx, calculate_frequency(0, 4), 1);
+    }
+
 }
 
 
 
 // AUDIO STUFF
 var reverbNode = {};
+var masterGain = {};
 var gctx = {};
 var droneIsPlaying = false;
 
-//Ding ADSR
+//Ding default ADSR
 var dingAttack = 0.001;
 var dingDecay = 0.1;
 var dingSustain = 1;
 var dingRelease = 0.4;
 
+//Initialize
 function initAudio(ctx) {
     console.log("Initialized audio");
     gctx = ctx;
+
+    masterGain = ctx.createGain();
+    masterGain.gain = 1;
+    masterGain.connect(ctx.destination);
 
     //Load reverb and create a reverb node
     var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
     var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
     reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
-        reverbNode.connect(ctx.destination);
+        reverbNode.connect(masterGain);
 
         //Ready to hook stuff up!
         play_drone();
     });
 }
 
-function Ding(ctx, freq) {
+//Synthesis functions
+function Ding(ctx, freq, r) {
     this.sr = ctx.sampleRate;
 
     var osc1 = ctx.createOscillator();
@@ -290,7 +305,7 @@ function Ding(ctx, freq) {
     osc1.start();
     osc2.start();
     console.log("Created Ding");
-    envGenPluck(vca.gain, 1, 0, dingAttack, dingRelease);
+    envGenPluck(vca.gain, 1, 0, dingAttack, r);
     envGenPluck(filter.frequency, 2000, 300, dingAttack, dingRelease);
 }
 
@@ -346,10 +361,10 @@ function Drone(ctx) {
     lfo1.frequency.value = 0.1;
 
     var filterLFOGain = ctx.createGain();
-    filterLFOGain.gain.value = 300;
+    filterLFOGain.gain.value = 150;
 
     var volumeLFOGain = ctx.createGain();
-    volumeLFOGain.gain.value = 0.4;
+    volumeLFOGain.gain.value = 0.2;
 
 
     var gain1 = ctx.createGain();
@@ -360,12 +375,12 @@ function Drone(ctx) {
 
 
     var filter1 = ctx.createBiquadFilter();
-    filter1.frequency.setValueAtTime(calculate_frequency(0), ctx.currentTime);
+    filter1.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
     filter1.Q.setValueAtTime(8, ctx.currentTime);
     filter1.type = 'lowpass';
 
     var filter2 = ctx.createBiquadFilter();
-    filter2.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
+    filter2.frequency.setValueAtTime(calculate_frequency(-30), ctx.currentTime);
     filter2.Q.setValueAtTime(12, ctx.currentTime);
     filter2.type = 'lowpass';
 
@@ -389,8 +404,6 @@ function Drone(ctx) {
     // gain1.connect(ctx.destination);
     // gain2.connect(ctx.destination);
 
-    reverbNode.connect(ctx.destination);
-
     osc1.start();
     osc2.start();
     lfo1.start();
@@ -398,6 +411,10 @@ function Drone(ctx) {
 
 
 //Helpers
+function updateMasterGain(volume) {
+    masterGain.gain.value = volume * 0.6;
+}
+
 function envGenPluck(vcaGain, upper, lower, a, r) {
     var now = gctx.currentTime;
     vcaGain.cancelScheduledValues(0);
@@ -424,10 +441,13 @@ function envGenOff(vcaGain, r) {
     vcaGain.linearRampToValueAtTime(0, now + r);
 }
 
-function calculate_frequency(steps) {
+function calculate_frequency(steps, oct) {
+    var octave = oct || 4;
+    var octave_offset = 12 * (octave - 4);
+
     var rootNote = 440;
     var a = Math.pow(2,(1.0/12));
-    var freq = rootNote*(Math.pow(a, steps));
+    var freq = rootNote*(Math.pow(a, steps+octave_offset));
     // console.log(steps);
     console.log(freq);
     return freq;
@@ -443,14 +463,12 @@ function random_note() {
 
     var index = Math.floor(Math.random() * major_key.length);
     console.log(index);
-    return calculate_frequency(selected_key[index] + octave_offset);
+    return calculate_frequency(selected_key[index], octave);
 }
 
 function play_sound() {
     // var pluck = new Pluck( gctx, random_note() );
     // pluck.play( random_note() );
-
-    var ding = new Ding(gctx, random_note());
 
     if (!droneIsPlaying) {
         play_drone();

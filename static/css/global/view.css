@@ -4,6 +4,7 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
+  user-select: none;
   width: 100vw;
 }
 
@@ -74,6 +75,11 @@
   bottom: 0;
   right: 0;
   position: absolute;
+}
+
+/* test */
+.test-button {
+  margin-right: var(--sm);
 }
 
 /* transition */

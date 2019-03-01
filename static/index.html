@@ -322,15 +322,17 @@
 <main class="main js-main">
   <section class="view js-view"></section>
   <footer class="flex align-center justify-justified footer">
-    <span class="about-link">
+    <span class="flex about-link">
       <span id="volumeWrapper" class="interface">
         <span id="volumeSlider" class="noUiSlider"></span>
       </span>
     </span>
-    <div>
-      <button class="btn sm test-button" type="button">Test</button>
-      <input type="checkbox" name="connectToMQ" id="connectToMQ">
-      <label for='connectToMQ'>Connect to MQ</label>
+    <div class="flex shrink">
+      <button class="btn sm test-button" type="button">Ping</button>
+      <label class="flex shrink align-center toggle">MQ Data
+        <input type="checkbox" name="connectToMQ" id="connectToMQ">
+        <div class="toggle-input"></div>
+      </label>
     </div>
   </footer>
 </main>

@@ -1,0 +1,44 @@
+.toggle input {
+  position: absolute; /* no effect on layout */
+  visibility: hidden; /* not visible, but functional */
+}
+
+.toggle {
+  font-size: 13px;
+  font-weight: var(--weight-bold);
+  position: relative;
+}
+
+.toggle-input {
+  transition: background .15s var(--trans-time);
+  background: var(--black);
+  border-radius: var(--md);
+  cursor: pointer;
+  height: var(--md);
+  margin-left: var(--xs);
+  position: relative;
+  width: 40px;
+}
+
+.toggle-input::after {
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0,0,0,.05);
+  content: '';
+  display: block;
+  height: var(--md);
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform .15s var(--trans-time);
+  width: var(--md);
+}
+
+.toggle input:checked ~ .toggle-input {
+  background: var(--teal);
+  box-shadow: 0 0 30px rgba(133,223,196,.75);
+}
+
+.toggle input:checked ~ .toggle-input::after {
+  transform: translate3d(20px,0,0);
+}

@@ -10,12 +10,10 @@
   overflow: visible;
 }
 
-// switch orientation to vertical (defaults to horizontal)
 .col {
   flex-flow: column nowrap;
 }
 
-// shrink to only fill space of content (defaults to fill available space)
 .shrink {
   flex: 0 0 auto;
 }
@@ -24,7 +22,6 @@
   flex: 1 1 100%;
 }
 
-// alignment of content (defaults to left)
 .justify-center {
   justify-content: center;
 }
@@ -34,11 +31,11 @@
 }
 
 .justify-justified {
-  justify-content: space-between; // space between blocks is even
+  justify-content: space-between;
 }
 
 .justify-spaced {
-  justify-content: space-around; // space around blocks is even
+  justify-content: space-around;
 }
 
 .align-center {

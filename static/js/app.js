@@ -182,7 +182,6 @@ initMessages = function(svg) {
 }
 
 pollMessages = function() {
-
     getMessage()
       .then(data => {
           handle_message(data);
@@ -209,10 +208,12 @@ function handle_message(msg) {
 }
 
 // For request events
-function Pluck(ctx) {
+function Pluck(ctx, freq) {
     this.sr = ctx.sampleRate;
     this.pro = ctx.createScriptProcessor( 512, 0, 1 );
     this.pro.connect( ctx.destination );
+
+    this.play(freq);
 }
 
 Pluck.prototype.play = function( freq ) {
@@ -238,13 +239,77 @@ Pluck.prototype.pause = function() {
   this.playing = false;
 };
 
+function Ding(ctx, freq) {
+    this.sr = ctx.sampleRate;
+
+}
 
 // For continuous background noise
 function Drone(ctx) {
     this.sr = ctx.sampleRate;
     // this.pro = ctx.createScriptProcessor( 512, 0, 1 );
     // this.pro.connect( ctx.destination );
+
+    var osc1 = ctx.createOscillator();
+    var osc2 = ctx.createOscillator();
+    var lfo1 = ctx.createOscillator();
+
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(calculate_frequency(-36), ctx.currentTime);
+
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(calculate_frequency(-36)+0.5, ctx.currentTime);
+
+    lfo1.type = 'sine';
+    lfo1.frequency.value = 2;
+
+    var lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0.4;
+
+    var gain1 = ctx.createGain();
+    gain1.gain.setValueAtTime(0.4, ctx.currentTime);
+
+    var gain2 = ctx.createGain();
+    gain2.gain.setValueAtTime(0.2, ctx.currentTime);
+
+    var filter1 = ctx.createBiquadFilter();
+    filter1.frequency.setValueAtTime(calculate_frequency(12), ctx.currentTime);
+    filter1.Q.setValueAtTime(5, ctx.currentTime);
+    filter1.type = 'lowpass';
+
+    var filter2 = ctx.createBiquadFilter();
+    filter2.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
+    filter2.Q.setValueAtTime(5, ctx.currentTime);
+    filter2.type = 'lowpass';
+
+    var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
+    var reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
+        osc1.connect(filter1);
+        osc2.connect(filter2);
+
+        lfo1.connect(lfoGain);
+        lfoGain.connect(gain1.gain);
+        lfoGain.connect(gain2.gain);
+
+        filter1.connect(gain1);
+        filter2.connect(gain2);
+
+        gain1.connect(reverbNode);
+        // gain2.connect(reverbNode);
+
+        reverbNode.connect(ctx.destination);
+
+        osc1.start();
+        osc2.start();
+        lfo1.start();
+    });
+
+    
+
+
 }
+
+// var drone = new Drone();
 
 function calculate_frequency(steps) {
     var rootNote = 440;
@@ -269,30 +334,20 @@ function random_note() {
 }
 
 function play_sound() {
-    pluck = new Pluck( gctx );
-    pluck.play( random_note() );
-    // var max_pitch = 100.0;
-    // var log_used = 1.0715307808111486871978099;
-    // var pitch = 100 - Math.min(max_pitch, Math.log(size + log_used) / Math.log(log_used));
-    // var index = Math.floor(pitch / 100.0 * Object.keys(celesta).length);
-    // var fuzz = Math.floor(Math.random() * 4) - 2;
-    // index += fuzz;
-    // index = Math.min(Object.keys(celesta).length - 1, index);
-    // index = Math.max(1, index);
-    // if (current_notes < note_overlap) {
-    //     current_notes++;
+    var pluck = new Pluck( gctx, random_note() );
+    // pluck.play( random_note() );
 
-    //     // if (type == 'add') {
-    //     //     celesta[index].play();
-    //     // } else {
-    //     //     clav[index].play();
-    //     // }
-    //     pluck = new Pluck( gctx );
-    //     pluck.play( random_note() );
-    //     setTimeout(function() {
-    //         current_notes--;
-    //     }, note_timeout);
-    // }
+    if (!droneIsPlaying) {
+        // play_drone();
+    }
+
+}
+
+var droneIsPlaying = false;
+
+function play_drone() {
+    var drone = new Drone( gctx );
+    droneIsPlaying = true;
 }
 
 function play_random_swell() {

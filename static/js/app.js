@@ -206,7 +206,7 @@ pollMessages = function() {
       .then(function() {
         if (should_connect) {
             // console.log('Polling');
-            setTimeout(pollMessages, 2000);
+            setTimeout(pollMessages, 500);
         }
       });
 }
@@ -223,6 +223,11 @@ function handle_message(msg) {
       handle_alarm_off();
     }
 
+    var totalRequests = 0;
+    for (var key in msg.codes) {
+      totalRequests += msg.codes[key].count;
+    }
+
     console.log(msg);
     if (msg.codes['429']) {
       for (var i = 0; i < Math.min(msg.codes['429'].count, 5); i++) {
@@ -234,6 +239,10 @@ function handle_message(msg) {
         emit5xx(i, msg);
       }
     }
+    var l = Math.min((totalRequests / 300) * 100, 100);
+    var l2 = Math.min((msg.latency / 500) * 100, 100);
+    console.log('drone:', l, l2);
+    drone.updateSettings(Math.min((totalRequests / 300) * 100, 100), Math.min((msg.latency / 500) * 100, 100));
 }
 
 function emit4xx(i, msg) {

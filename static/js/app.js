@@ -207,12 +207,23 @@ function handle_message(msg) {
         return;
     }
 
-    console.log(msg);
-    for (var i = 0; i < Math.min(msg.codes['400'].count, 25); i++) {
-      emit4xx(i, msg);
+    if (msg.alarm == 'on') {
+      handle_alarm_on();
     }
-    for (var i = 0; i < Math.min(msg.codes['500'].count, 25); i++) {
-      emit5xx(i, msg);
+    else if (msg.alarm == 'off') {
+      handle_alarm_off();
+    }
+
+    console.log(msg);
+    if (msg.codes['429']) {
+      for (var i = 0; i < Math.min(msg.codes['429'].count, 5); i++) {
+        emit4xx(i, msg);
+      }
+    }
+    if (msg.codes['500']) {
+      for (var i = 0; i < Math.min(msg.codes['500'].count, 5); i++) {
+        emit5xx(i, msg);
+      }
     }
 }
 
@@ -224,10 +235,10 @@ function emit4xx(i, msg) {
     console.log(i);
     var ding = new Ding(gctx, calculate_frequency(0, 3), 0.1);
     wp_action({
-      page_title: '400',
+      page_title: '429',
       url: url,
       change_size: change_size,
-      status: 400
+      status: 429
     }, svg_area);
   }, Math.random() * 5000);
 }
@@ -245,6 +256,22 @@ function emit5xx(i, msg) {
     }, svg_area);
   }, Math.random() * 5000);
 }
+
+var alarmIsOn = false;
+function handle_alarm_on(msg) {
+  if (!alarmIsOn) {
+    alarmIsOn = true;
+    console.log("ALARM ON");
+  }
+}
+
+function handle_alarm_off() {
+  if (alarmIsOn) {
+    alarmIsOn = false;
+    console.log("ALARM OFF");
+  }
+}
+
 
 // AUDIO STUFF
 var reverbNode = {};

@@ -32,14 +32,14 @@
 }
 
 .oscillator-2x {
-  animation: oscillator-2x 4s infinite;
+  animation: oscillator-2x 5s infinite;
 }
 
-.oscillator-4x {
+.oscillator-max {
   animation: oscillator-4x .667s infinite;
 }
 
-.funk {
+.funk.funky {
   animation: funk 10s infinite;
 }
 
@@ -67,7 +67,7 @@
   }
 }
 
-@keyframes oscillator-4x {
+@keyframes oscillator-max {
   0% {
     filter: blur(.5px) brightness(1);
   }

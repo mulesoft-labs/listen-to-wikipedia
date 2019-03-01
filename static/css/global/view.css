@@ -27,8 +27,56 @@
   filter: blur(.5px);
 }
 
-.view.funk {
-  animation: funk 15s infinite;
+.oscillator {
+  animation: oscillator-1x 10s infinite;
+}
+
+.oscillator-2x {
+  animation: oscillator-2x 4s infinite;
+}
+
+.oscillator-4x {
+  animation: oscillator-4x .667s infinite;
+}
+
+.funk {
+  animation: funk 10s infinite;
+}
+
+@keyframes oscillator-1x {
+  0% {
+    filter: blur(.5px) brightness(1);
+  }
+  50% {
+    filter: blur(.5px) brightness(1.5);
+  }
+  100% {
+    filter: blur(.5px) brightness(1);
+  }
+}
+
+@keyframes oscillator-2x {
+  0% {
+    filter: blur(.5px) brightness(1);
+  }
+  50% {
+    filter: blur(.5px) brightness(1.5);
+  }
+  100% {
+    filter: blur(.5px) brightness(1);
+  }
+}
+
+@keyframes oscillator-4x {
+  0% {
+    filter: blur(.5px) brightness(1);
+  }
+  50% {
+    filter: blur(.5px) brightness(2);
+  }
+  100% {
+    filter: blur(.5px) brightness(1);
+  }
 }
 
 @keyframes funk {
@@ -55,6 +103,7 @@
   }
 }
 
+.oscillator,
 .view,
 .view svg {
   height: 100%;

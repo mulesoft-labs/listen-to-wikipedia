@@ -296,6 +296,7 @@ function handle_alarm_off() {
     alarmIsOn = false;
     view.classList.remove('funky');
     view.removeChild(thresholdText);
+    static.pause();
     console.log("ALARM OFF");
   }
 }

@@ -1,9 +1,5 @@
-.view,
-.view svg {
+.main {
   background: linear-gradient(#291638, #0e0813);
-}
-
-.view {
   color: var(--white);
   height: 100vh;
   overflow: hidden;
@@ -11,7 +7,7 @@
   width: 100vw;
 }
 
-.view::before {
+.main::before {
   background: url(../../img/scanlines.svg);
   bottom: 0;
   content: "";
@@ -26,6 +22,11 @@
   z-index: 100;
 }
 
+.view {
+  filter: blur(.5px);
+}
+
+.view,
 .view svg {
   height: 100%;
   width: 100%;
@@ -43,18 +44,22 @@
 
 /* enable sound button */
 .btn.unmute {
-  border-radius: 60px;
+  border-radius: 50px;
   bottom: 0;
   display: table;
-  font-size: 50px;
-  height: 120px;
-  line-height: 120px;
+  filter: blur(.5px);
+  font-family: var(--vcr);
+  font-size: 30px;
+  height: 100px;
   left: 0;
+  line-height: 100px;
   margin: auto;
+  opacity: .95;
   position: absolute;
   right: 0;
+  text-shadow: 1px 0 var(--red);
   top: 0;
-  width: 450px;
+  width: 400px;
   z-index: 10;
 }
 

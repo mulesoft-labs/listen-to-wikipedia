@@ -716,7 +716,7 @@ function update_epm(epm, footer) {
         document.querySelector('.js-center').appendChild(epm_el);
         epm_text = true;
     } else {
-        let epm_copy = `${epm} requests/minute`;
+        let epm_copy = `${epm} messages/minute`;
         epm_el.innerHTML = epm_copy;
     }
 }

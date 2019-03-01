@@ -207,6 +207,74 @@ function handle_message(msg) {
     wp_action(msg, svg_area);
 }
 
+
+
+// AUDIO STUFF
+var reverbNode = {};
+var gctx = {};
+var droneIsPlaying = false;
+
+//Ding ADSR
+var dingAttack = 0.001;
+var dingDecay = 0.1;
+var dingSustain = 1;
+var dingRelease = 0.2;
+
+function initAudio(ctx) {
+    console.log("Initialized audio");
+    gctx = ctx;
+
+    //Load reverb and create a reverb node
+    var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
+    var reverbUrl = "./sounds/impulses/MidiverbMark2Preset29.m4a";
+    reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
+        reverbNode.connect(ctx.destination);
+
+        //Ready to hook stuff up!
+        play_drone();
+    });
+}
+
+function Ding(ctx, freq) {
+    this.sr = ctx.sampleRate;
+
+    var osc1 = ctx.createOscillator();
+    var osc2 = ctx.createOscillator();
+    var vca  = ctx.createGain();
+    var gain = ctx.createGain();
+    var filter = ctx.createBiquadFilter();
+
+    filter.frequency.setValueAtTime(calculate_frequency(0), ctx.currentTime);
+    filter.Q.setValueAtTime(8, ctx.currentTime);
+    filter.type = 'lowpass';
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.value = freq;
+
+    osc2.type = 'triangle';
+    osc2.frequency.value = calculate_frequency(0);
+
+    vca.gain.value = 0;
+
+    gain.gain.value = 0.8;
+
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+
+    filter.connect(vca);
+
+    vca.connect(gain);
+
+    gain.connect(reverbNode);
+
+    osc1.start();
+    osc2.start();
+    console.log("Created Ding");
+    envGenPluck(vca.gain, 1, 0, dingAttack, dingRelease);
+    envGenPluck(filter.frequency, 2000, 300, dingAttack, dingRelease);
+}
+
 // For request events
 function Pluck(ctx, freq) {
     this.sr = ctx.sampleRate;
@@ -239,11 +307,6 @@ Pluck.prototype.pause = function() {
   this.playing = false;
 };
 
-function Ding(ctx, freq) {
-    this.sr = ctx.sampleRate;
-
-}
-
 // For continuous background noise
 function Drone(ctx) {
     this.sr = ctx.sampleRate;
@@ -254,17 +317,21 @@ function Drone(ctx) {
     var osc2 = ctx.createOscillator();
     var lfo1 = ctx.createOscillator();
 
-    osc1.type = 'triangle';
+    osc1.type = 'sawtooth';
     osc1.frequency.setValueAtTime(calculate_frequency(-36), ctx.currentTime);
 
     osc2.type = 'square';
     osc2.frequency.setValueAtTime(calculate_frequency(-36)+0.5, ctx.currentTime);
 
     lfo1.type = 'sine';
-    lfo1.frequency.value = 2;
+    lfo1.frequency.value = 0.1;
 
-    var lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.4;
+    var filterLFOGain = ctx.createGain();
+    filterLFOGain.gain.value = 300;
+
+    var volumeLFOGain = ctx.createGain();
+    volumeLFOGain.gain.value = 0.4;
+
 
     var gain1 = ctx.createGain();
     gain1.gain.setValueAtTime(0.4, ctx.currentTime);
@@ -272,50 +339,77 @@ function Drone(ctx) {
     var gain2 = ctx.createGain();
     gain2.gain.setValueAtTime(0.2, ctx.currentTime);
 
+
     var filter1 = ctx.createBiquadFilter();
-    filter1.frequency.setValueAtTime(calculate_frequency(12), ctx.currentTime);
-    filter1.Q.setValueAtTime(5, ctx.currentTime);
+    filter1.frequency.setValueAtTime(calculate_frequency(0), ctx.currentTime);
+    filter1.Q.setValueAtTime(8, ctx.currentTime);
     filter1.type = 'lowpass';
 
     var filter2 = ctx.createBiquadFilter();
     filter2.frequency.setValueAtTime(calculate_frequency(-20), ctx.currentTime);
-    filter2.Q.setValueAtTime(5, ctx.currentTime);
+    filter2.Q.setValueAtTime(12, ctx.currentTime);
     filter2.type = 'lowpass';
 
-    var reverbUrl = "./sounds/impulses/StPatricksChurchPatringtonPosition1.m4a";
-    var reverbNode = ctx.createReverbFromUrl(reverbUrl, function() {
-        osc1.connect(filter1);
-        osc2.connect(filter2);
 
-        lfo1.connect(lfoGain);
-        lfoGain.connect(gain1.gain);
-        lfoGain.connect(gain2.gain);
+    osc1.connect(filter1);
+    osc2.connect(filter1);
 
-        filter1.connect(gain1);
-        filter2.connect(gain2);
+    lfo1.connect(filterLFOGain);
+    filterLFOGain.connect(filter1.frequency);
 
-        gain1.connect(reverbNode);
-        // gain2.connect(reverbNode);
+    lfo1.connect(volumeLFOGain);
+    volumeLFOGain.connect(gain1.gain);
+    volumeLFOGain.connect(gain2.gain);
 
-        reverbNode.connect(ctx.destination);
+    filter1.connect(gain1);
+    filter2.connect(gain2);
 
-        osc1.start();
-        osc2.start();
-        lfo1.start();
-    });
+    gain1.connect(reverbNode);
+    gain2.connect(reverbNode);
 
-    
+    // gain1.connect(ctx.destination);
+    // gain2.connect(ctx.destination);
 
+    reverbNode.connect(ctx.destination);
 
+    osc1.start();
+    osc2.start();
+    lfo1.start();
 }
 
-// var drone = new Drone();
+
+//Helpers
+function envGenPluck(vcaGain, upper, lower, a, r) {
+    var now = gctx.currentTime;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueAtTime(0, now);
+    vcaGain.linearRampToValueAtTime(upper, now + a);
+    vcaGain.linearRampToValueAtTime(lower, now + a + r);
+}
+
+function envGenOn(vcaGain, a, d, s) {
+    var now = gctx.currentTime;
+    // a *= egMode;
+    // d *= egMode;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueAtTime(0, now);
+    vcaGain.linearRampToValueAtTime(1, now + a);
+    vcaGain.linearRampToValueAtTime(s, now + a + d);
+}
+
+function envGenOff(vcaGain, r) {
+    var now = gctx.currentTime;
+    // r *= egMode;
+    vcaGain.cancelScheduledValues(0);
+    vcaGain.setValueAtTime(vcaGain.value, now);
+    vcaGain.linearRampToValueAtTime(0, now + r);
+}
 
 function calculate_frequency(steps) {
     var rootNote = 440;
     var a = Math.pow(2,(1.0/12));
     var freq = rootNote*(Math.pow(a, steps));
-    console.log(steps);
+    // console.log(steps);
     console.log(freq);
     return freq;
 }
@@ -334,21 +428,23 @@ function random_note() {
 }
 
 function play_sound() {
-    var pluck = new Pluck( gctx, random_note() );
+    // var pluck = new Pluck( gctx, random_note() );
     // pluck.play( random_note() );
 
+    var ding = new Ding(gctx, random_note());
+
     if (!droneIsPlaying) {
-        // play_drone();
+        play_drone();
     }
-
 }
-
-var droneIsPlaying = false;
 
 function play_drone() {
     var drone = new Drone( gctx );
     droneIsPlaying = true;
 }
+
+
+
 
 function play_random_swell() {
     var index = Math.round(Math.random() * (swells.length - 1));

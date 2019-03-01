@@ -164,9 +164,12 @@
         $('.js-view').prepend('<button class="btn md unmute" type="button">Enable Sound</button>');
       }
       $(document).click(function() {
-        Howler.ctx.resume().then($('.unmute').fadeOut(150));
-        reverbjs.extend(Howler.ctx);
-        gctx = Howler.ctx;
+        if (Howler.ctx.state == 'suspended') {
+          Howler.ctx.resume().then($('.unmute').fadeOut(150));
+          reverbjs.extend(Howler.ctx);
+          // gctx = Howler.ctx;
+          initAudio(Howler.ctx);
+        }
       });
     }
 

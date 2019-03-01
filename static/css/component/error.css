@@ -17,3 +17,8 @@
   font-size: 30px;
   font-weight: var(--weight-bold);
 }
+
+/* turbo mode */
+.turbo-mode .error {
+  filter: blur(.5px);
+}

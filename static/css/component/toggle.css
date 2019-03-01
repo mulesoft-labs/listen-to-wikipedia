@@ -10,13 +10,13 @@
 }
 
 .toggle-input {
-  transition: background .15s var(--trans-time);
   background: #251047;
   border-radius: var(--md);
   cursor: pointer;
   height: var(--md);
   margin-left: var(--xs);
   position: relative;
+  transition: background .15s var(--trans-time);
   width: 40px;
 }
 

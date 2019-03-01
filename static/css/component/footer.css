@@ -37,3 +37,19 @@
     margin-top: var(--sm);
   }
 }
+
+/* edits per minute */
+.newuser-label {
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+
+/* test */
+.test-button {
+  margin-right: var(--sm);
+}
+
+.footer .toggle + .toggle {
+  margin-left: var(--sm);
+}

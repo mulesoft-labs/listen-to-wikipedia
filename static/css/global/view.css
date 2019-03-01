@@ -43,6 +43,11 @@
   animation: funk 10s infinite;
 }
 
+/* turbo mode */
+.turbo-mode .funk.funky {
+  animation: turbo-funk 10s infinite;
+}
+
 @keyframes oscillator-1x {
   0% {
     filter: blur(1px) brightness(1);
@@ -103,6 +108,30 @@
   }
 }
 
+@keyframes turbo-funk {
+  0% {
+    filter: blur(1px) invert(100%) saturate(10);
+  }
+  .67%,
+  40% {
+    filter: blur(1px);
+  }
+  40.1% {
+    filter: blur(1px) invert(100%) saturate(10);
+  }
+  40.77%,
+  60% {
+    filter: blur(1px);
+  }
+  60.1% {
+    filter: blur(1px) invert(100%) saturate(10);
+  }
+  60.77%,
+  100% {
+    filter: blur(1px);
+  }
+}
+
 .oscillator,
 .view,
 .view svg:not(.svg-error) {
@@ -146,17 +175,11 @@
   transform: translateY(50px);
 }
 
-/* edits per minute */
-.newuser-label {
-  bottom: 0;
-  right: 0;
-  position: absolute;
+/* turbo mode */
+.turbo-mode .article-label {
+  filter: none;
 }
 
-/* test */
-.test-button {
-  margin-right: var(--sm);
-}
 
 /* transition */
 circle {
